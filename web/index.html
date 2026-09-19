@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FlyBrain — live mushroom body</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<header>
+  <h1>FlyBrain</h1>
+  <p class="sub">a dopamine-modulated spiking mushroom body, learning the alphabet</p>
+  <div class="stats">
+    <span class="badge" id="acc-badge">accuracy —</span>
+    <span class="badge" id="spar-badge">KC code —</span>
+    <span class="badge" id="dopa-badge">dopamine —</span>
+    <label class="toggle">
+      <input type="checkbox" id="learn-toggle">
+      <span>plasticity on</span>
+    </label>
+  </div>
+</header>
+
+<main>
+
+  <!-- ---------------------------------------------------------------- the fly -->
+  <section class="panel fly-panel">
+    <h2>the animal</h2>
+    <div class="fly-wrap">
+      <div class="fly-stage" id="fly-stage">
+        <canvas id="cv-fly3d"></canvas>
+        <!-- what the fly says. hidden until it has something to say. -->
+        <div class="bubble" id="bubble" aria-live="polite">
+          <span id="bubble-text"></span>
+        </div>
+        <div class="brain-hud" id="brain-hud">
+          <svg viewBox="110 21 42 42" aria-hidden="true">
+            <defs>
+              <radialGradient id="glow">
+                <stop offset="0%" stop-color="#ffe08a" stop-opacity="0.85"/>
+                <stop offset="100%" stop-color="#ffe08a" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+
+        <!-- ===================== THE MIND, ON THE SIDE ==================== -->
+        <g id="mb-callout">
+          <circle id="mb-glow" cx="131" cy="42" r="20" fill="url(#glow)" opacity="0"/>
+          <circle cx="131" cy="42" r="17.5" fill="#181223" stroke="#4a3f63"
+                  stroke-width="0.7"/>
+          <circle cx="131" cy="42" r="15" fill="none" stroke="#2b2340"
+                  stroke-width="0.4" stroke-dasharray="1.6 2.6"/>
+
+          <!-- antennal lobe: where the antennae report to -->
+          <g fill="none" stroke="#4fbf7f" stroke-width="0.5" opacity="0.75">
+            <path d="M 114 36 L 117.5 40"/>
+            <path d="M 114 42 L 117.5 42"/>
+            <path d="M 114 48 L 117.5 44"/>
+          </g>
+          <circle cx="120.5" cy="42" r="3.9" fill="#2f6b4a" stroke="#4fbf7f"
+                  stroke-width="0.6"/>
+          <circle cx="120.5" cy="42" r="1.3" fill="#6fe0a3" opacity="0.7"/>
+
+          <!-- mushroom body: a pair of lobes, one per hemisphere -->
+          <g id="mb">
+            <ellipse class="mb-part" cx="127" cy="32" rx="4.9" ry="3.6"
+                     fill="currentColor"/>
+            <ellipse class="mb-part" cx="127" cy="52" rx="4.9" ry="3.6"
+                     fill="currentColor"/>
+            <path class="mb-part" d="M 127 35.5 Q 134 38.5 137 42" fill="none"
+                  stroke="currentColor" stroke-width="1.2"/>
+            <path class="mb-part" d="M 127 48.5 Q 134 45.5 137 42" fill="none"
+                  stroke="currentColor" stroke-width="1.2"/>
+            <path class="mb-part" d="M 137 42 L 137 32.5" fill="none"
+                  stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            <path class="mb-part" d="M 137 42 L 137 51.5" fill="none"
+                  stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </g>
+
+          <!-- MBON output leaving the mushroom body -->
+          <g fill="none" stroke="#b04a5a" stroke-width="0.7" opacity="0.8">
+            <path d="M 140 38 L 144 35"/>
+            <path d="M 140 42 L 145 42"/>
+            <path d="M 140 46 L 144 49"/>
+          </g>
+        </g>
+          </svg>
+        </div>
+      </div>
+      <div class="fly-caption">
+        <span id="fly-state">walking</span>
+        <span class="hint">a fly, not a diagram: tripod gait, beating wings, antennae
+          sweeping. the callout is its brain &mdash; green is the antennal lobe, the
+          gold pair are the mushroom bodies, where the memory lives</span>
+      </div>
+    </div>
+
+    <h2>readout</h2>
+    <div class="readout" id="readout">present a letter</div>
+
+    <h2>dopamine (PAM / DAN)</h2>
+    <canvas id="cv-dopa" height="90"></canvas>
+    <p class="hint" id="dopa-note">sugar on a correct answer, bitter on a wrong one</p>
+
+    <h2>the brain, and what the reward does to it</h2>
+    <canvas id="cv-brain" height="290"></canvas>
+    <p class="hint">
+      <b>which part answers:</b> green pulses are the letter arriving from the
+      receptors, cyan is the sparse code crossing the calyx, amber is the vote
+      leaving for the mouthparts. the vote strip at the bottom is all 27 output
+      cells &mdash; the tallest bar <em>is</em> the answer, and the second-tallest is
+      what it beat.<br>
+      <b>what glows for sugar:</b> a gold burst sweeps up from the taste organ
+      through the subesophageal zone and along PAM/DAN onto the mushroom body,
+      then an expanding gold ring appears on the row that earned the credit.
+      that ring is the memory being written.<br>
+      <b>what gets inflamed by punishment:</b> bitter is crimson, not gold. it
+      spreads as a blotchy swelling over the mushroom body, jerks instead of
+      pulsing, fades far more slowly &mdash; and the row that answered gets crossed
+      out, because bitter <em>weakens</em> that row instead of strengthening it.<br>
+      solid outlines are regions this model actually simulates. the dashed ones
+      &mdash; optic lobes, lateral horn, central complex, subesophageal zone, taste
+      organ &mdash; are anatomy it does not implement, and the last two light only
+      because a real reward was delivered. no FlyWire data is used.
+    </p>
+  </section>
+
+  <!-- ---------------------------------------------------------------- circuit -->
+  <section class="panel circuit-panel">
+    <h2>the circuit, live</h2>
+    <p class="hint">35 receptors &rarr; 128 projection neurons &rarr; 512 Kenyon cells &rarr; 27 MBONs.
+       only KC &rarr; MBON is plastic.</p>
+
+    <div class="stage">
+      <div class="stage-label">
+        <b>receptor sheet</b><span id="lbl-rec">35 pixels &middot; mean firing rate</span>
+      </div>
+      <canvas id="cv-rec" height="180"></canvas>
+    </div>
+
+    <div class="stage">
+      <div class="stage-label">
+        <b>antennial lobe</b><span id="lbl-pn">128 PNs &middot; graded response</span>
+      </div>
+      <canvas id="cv-pn" height="70"></canvas>
+    </div>
+
+    <div class="stage">
+      <div class="stage-label">
+        <b>Kenyon cells</b><span id="lbl-kc">sparse code &middot; APL keeps only the top k</span>
+      </div>
+      <canvas id="cv-kc" height="70"></canvas>
+    </div>
+
+    <div class="stage">
+      <div class="stage-label">
+        <b>MBON readout</b><span id="lbl-mbon">spike counts in the window</span>
+      </div>
+      <canvas id="cv-mbon" height="240"></canvas>
+    </div>
+
+    <!-- ---------------------------------------------- what it has read ----- -->
+    <!-- The vote strip above says which of the 27 cells won this time. This
+         says what the winners add up to. Every character in here is a
+         character the fly SAID - nothing is filled in on its behalf, and a
+         character it was never shown is never drawn as though it had read it. -->
+    <div class="tx" id="tx">
+      <div class="tx-head">
+        <b>what it has read so far</b>
+        <button id="btn-tx-clear">clear</button>
+      </div>
+      <p class="hint">
+        the fly's own answers, glued back into text. the <b>word</b> is what it
+        has said since its last space; the <b>paragraph</b> is everything since
+        the last reset. the colour of each character says whether it was right,
+        so a misread word is visible <i>as a misread word</i> rather than quietly
+        corrected.
+      </p>
+
+      <div class="tx-row">
+        <span class="tx-lab">word</span>
+        <span id="tx-word" class="tx-blank">&mdash;</span>
+      </div>
+
+      <div class="tx-row">
+        <span class="tx-lab">paragraph</span>
+        <div id="tx-para" class="tx-text"><i class="tx-blank">nothing read yet</i></div>
+      </div>
+
+      <div class="tx-stat" id="tx-stat"></div>
+      <p class="hint">
+        <span class="sw hit"></span> it said the right character &nbsp;
+        <span class="sw miss"></span> it said a different letter &mdash; struck
+        through, with the page's character in the tooltip &nbsp;
+        <span class="sw unknown"></span> the page had a digit, and it has no cell
+        for one, so it answered with a letter &nbsp;
+        <span class="sw skip"></span> no glyph in the 5&times;7 font, so it was
+        never shown and is not counted as read.
+      </p>
+    </div>
+  </section>
+
+  <!-- --------------------------------------------------------------- controls -->
+  <section class="panel controls-panel">
+
+    <div class="tabs" role="tablist">
+      <button class="tab on" id="tab-letters" role="tab">letters &amp; digits</button>
+      <button class="tab" id="tab-document" role="tab">a document</button>
+    </div>
+
+    <!-- ================================================ pane 1: single glyphs -->
+    <div class="pane" id="pane-letters">
+
+    <h2>stimulate &mdash; 27 letters</h2>
+    <p class="hint">
+      this is the fly's <b>entire vocabulary</b>: A&ndash;Z plus space, 27 output
+      cells and no more. everything the fly can say, it says from this row.
+    </p>
+    <div class="letters" id="letters"></div>
+    <div class="row">
+      <input id="phrase" type="text" value="MY NAME IS JEFF" spellcheck="false">
+      <button id="btn-say" class="primary">say it</button>
+    </div>
+    <p class="hint" id="phrase-note">
+      only A&ndash;Z and space can be answered. try typing a digit &mdash; the fly
+      receives it, but has no way to say it back.
+    </p>
+    <div class="said" id="said"></div>
+
+    <!-- ------------------------------------------------- the negative control -->
+    <h2>digits &mdash; the negative control</h2>
+    <p class="hint">
+      the fly was <b>never trained on a digit</b> and its output layer has no
+      digit in it. these buttons are still real stimuli: the bitmap goes onto the
+      same 35 receptors and the same circuit answers. it just cannot be right.
+    </p>
+    <div class="letters digits" id="digits"></div>
+    <div class="row">
+      <button id="btn-proof" class="primary">run the full test</button>
+      <span class="hint" id="proof-note" style="margin:auto 0">
+        shows all ten digits and records every answer
+      </span>
+    </div>
+    <div id="verdict"></div>
+    <div id="proof"></div>
+
+    <h2>reward &amp; learning</h2>
+    <p class="hint">training presents every letter, reads out an answer, and delivers
+       sucrose or bitter according to whether it was right.</p>
+    <div class="row">
+      <button data-epochs="1">train +1</button>
+      <button data-epochs="10">train +10</button>
+      <button data-epochs="60" class="primary">train +60</button>
+      <button id="btn-reset">reset brain</button>
+    </div>
+    <div class="progress"><div id="bar"></div></div>
+    <div class="log" id="log"></div>
+
+    <h2>learning curve</h2>
+    <canvas id="cv-curve" height="120"></canvas>
+
+    <h2>the memory: KC &rarr; MBON weights</h2>
+    <canvas id="cv-w" height="150"></canvas>
+    <p class="hint">red = positive (this KC excites this MBON), blue = negative.
+       the diagonal striping <i>is</i> the alphabet.</p>
+
+    </div><!-- /pane-letters -->
+
+    <!-- ===================================================== pane 2: documents -->
+    <div class="pane" id="pane-document" hidden>
+
+    <h2>read a document, one letter at a time</h2>
+    <p class="hint">
+      the fly is shown <b>one character at a time, in order</b>, exactly as if you
+      had pressed that letter's button &mdash; same 35 receptors, same circuit,
+      same reward. the brain panel on the left animates for every character.
+      <br><br>
+      it can only read what its hand-drawn 5&times;7 font can draw:
+      <b>A&ndash;Z</b>, <b>0&ndash;9</b> and <b>space</b>. digits are shown but
+      cannot be answered &mdash; the fly has no output cell for them. punctuation
+      and accented letters have no glyph at all, so they are <i>stepped over</i>.
+      nothing is guessed, and nothing is claimed to have been read that was not.
+    </p>
+
+    <div class="drop" id="doc-drop">
+      <input type="file" id="doc-file"
+             accept=".txt,.text,.md,.markdown,.csv,.log,.rst,.pdf,.epub">
+      <div class="drop-face">
+        <b>choose a file</b>
+        <span>or drop a .txt / .md / .pdf / .epub here</span>
+      </div>
+    </div>
+
+    <div class="row">
+      <input id="doc-paste" type="text" spellcheck="false"
+             placeholder="…or paste a line of text">
+      <button id="btn-doc-paste">read it</button>
+    </div>
+
+    <label class="toggle">
+      <input type="checkbox" id="doc-fold">
+      <span>fold unreadable characters to spaces</span>
+    </label>
+    <p class="hint" id="doc-fold-note">
+      off: the stream keeps its punctuation and the fly steps over it. on: every
+      character it has no glyph for becomes a space, so the stream is clean
+      prose. reload the file to change this.
+    </p>
+
+    <div id="doc-meta"></div>
+
+    <div id="doc-controls" hidden>
+      <h2>the fly is here</h2>
+      <div id="doc-where"></div>
+      <div class="doc-viewer" id="doc-viewer"></div>
+
+      <div class="row">
+        <button id="btn-doc-run" class="primary">read</button>
+        <button id="btn-doc-step">step &rsaquo;</button>
+        <button id="btn-doc-word">next word</button>
+        <button id="btn-doc-page">finish page</button>
+      </div>
+
+      <div class="row">
+        <span class="hint" style="margin:auto 0">speed</span>
+        <input type="range" id="doc-speed" min="0" max="6" step="1" value="3">
+        <span class="hint" id="doc-speed-note" style="margin:auto 0"></span>
+        <button id="btn-doc-rewind">rewind</button>
+      </div>
+
+      <div class="progress"><div id="doc-bar"></div></div>
+      <div id="doc-now"></div>
+      <div id="doc-tally"></div>
+      <h2>every character it has been shown</h2>
+      <div class="doc-feed" id="doc-feed"></div>
+      <p class="hint">
+        <span class="sw hit"></span> read correctly &nbsp;
+        <span class="sw miss"></span> a letter it got wrong &nbsp;
+        <span class="sw unknown"></span> a digit &mdash; shown, but unanswerable &nbsp;
+        <span class="sw skip"></span> no glyph, so it was never shown at all.
+      </p>
+    </div>
+
+    </div><!-- /pane-document -->
+  </section>
+
+</main>
+<script src="/fly3d.js"></script>
+<script src="/brain.js"></script>
+<script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+
+==========================================================================
+sweep: 200 epochs per run, lr=0.020, credit=pattern
+  reward mode (what the sugar is conditioned on) x lr schedule
+==========================================================================
+run                    final    best  last50    sec
+pavlovian + const     96.3% 100.0%  98.1%     54
+pavlovian + sqrt      96.3% 100.0%  98.0%     53
+pavlovian + inv       96.3% 100.0%  98.1%     55
+
+best run: pavlovian + inv  trailing-50 98.1%  final 96.3%
+  overrides: {'reward_mode': 'pavlovian', 'lr_schedule': 'inv', 'lr_half_life': 300}
+
+training the winner for 2000 epochs...
+  2000 epochs in 550s -> holdout 98.8%, trailing-100 98.1%, best 100.0%
+  saved -> C:\Users\user\Documents\Bug bounty\flybrain\runs\flybrain.pt
+  phrase 'MY NAME IS JEFF' reads correctly 86.1509% of the time
+
+restart serve.py to serve this checkpoint

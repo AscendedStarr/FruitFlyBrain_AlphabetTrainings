@@ -1,0 +1,23 @@
+# environments
+.venv/
+.venv-*/
+venv/
+env/
+
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# checkpoints that are not evidence
+*.pt.bak
+
+# scratch probes - anything named *_probe.json is a temporary run, not a result
+*_probe.json
+
+# editor / os
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store

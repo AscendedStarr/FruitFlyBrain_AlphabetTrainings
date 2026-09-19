@@ -1,0 +1,378 @@
+{
+  "source": "flybrain.pt (epoch 400)",
+  "epoch": 400,
+  "looks": 4,
+  "repeats": 30,
+  "n_classes": 27,
+  "classes": [
+    " ",
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "T",
+    "U",
+    "V",
+    "W",
+    "X",
+    "Y",
+    "Z"
+  ],
+  "chance": 0.037,
+  "alphabet_accuracy": 1.0,
+  "alphabet_hits": 810,
+  "alphabet_presented": 810,
+  "alphabet_margin_mean": 0.3591,
+  "alphabet_margin_min": 0.0714,
+  "digit_margin_mean": 0.1594,
+  "digit_margin_min": 0.0,
+  "digit_near_ties": 92,
+  "digit_presented": 300,
+  "digit_correct": 0,
+  "digit_in_vocabulary": 300,
+  "weights_sha256_before": "626bece30a76927e8fd124eef1c3fdc37e31c87b07c4d20636656141ee85d802",
+  "weights_sha256_after": "626bece30a76927e8fd124eef1c3fdc37e31c87b07c4d20636656141ee85d802",
+  "weights_unchanged": true,
+  "checkpoint_sha256_before": "1e56a34a4400ad4dc928e5989540d849a29348afe696eec1e69e56b684b42bb6",
+  "checkpoint_sha256_after": "1e56a34a4400ad4dc928e5989540d849a29348afe696eec1e69e56b684b42bb6",
+  "checkpoint_unchanged": true,
+  "plasticity_applied": false,
+  "stability": [
+    {
+      "digit": "0",
+      "ink": 19,
+      "modal": "G",
+      "modal_count": 15,
+      "n": 30,
+      "consistency": 0.5,
+      "answers": {
+        "G": 15,
+        "O": 15
+      },
+      "margin_mean": 0.0344
+    },
+    {
+      "digit": "1",
+      "ink": 10,
+      "modal": "I",
+      "modal_count": 30,
+      "n": 30,
+      "consistency": 1.0,
+      "answers": {
+        "I": 30
+      },
+      "margin_mean": 0.3108
+    },
+    {
+      "digit": "2",
+      "ink": 14,
+      "modal": "Q",
+      "modal_count": 23,
+      "n": 30,
+      "consistency": 0.7667,
+      "answers": {
+        "Q": 23,
+        "D": 7
+      },
+      "margin_mean": 0.0813
+    },
+    {
+      "digit": "3",
+      "ink": 14,
+      "modal": "Z",
+      "modal_count": 30,
+      "n": 30,
+      "consistency": 1.0,
+      "answers": {
+        "Z": 30
+      },
+      "margin_mean": 0.2382
+    },
+    {
+      "digit": "4",
+      "ink": 14,
+      "modal": " ",
+      "modal_count": 30,
+      "n": 30,
+      "consistency": 1.0,
+      "answers": {
+        " ": 30
+      },
+      "margin_mean": 0.2126
+    },
+    {
+      "digit": "5",
+      "ink": 17,
+      "modal": "D",
+      "modal_count": 29,
+      "n": 30,
+      "consistency": 0.9667,
+      "answers": {
+        "D": 29,
+        "U": 1
+      },
+      "margin_mean": 0.0852
+    },
+    {
+      "digit": "6",
+      "ink": 15,
+      "modal": "B",
+      "modal_count": 14,
+      "n": 30,
+      "consistency": 0.4667,
+      "answers": {
+        "G": 12,
+        "B": 14,
+        "C": 3,
+        "E": 1
+      },
+      "margin_mean": 0.0365
+    },
+    {
+      "digit": "7",
+      "ink": 11,
+      "modal": "Z",
+      "modal_count": 30,
+      "n": 30,
+      "consistency": 1.0,
+      "answers": {
+        "Z": 30
+      },
+      "margin_mean": 0.5037
+    },
+    {
+      "digit": "8",
+      "ink": 17,
+      "modal": "B",
+      "modal_count": 19,
+      "n": 30,
+      "consistency": 0.6333,
+      "answers": {
+        "B": 19,
+        "O": 10,
+        "G": 1
+      },
+      "margin_mean": 0.0402
+    },
+    {
+      "digit": "9",
+      "ink": 15,
+      "modal": "O",
+      "modal_count": 23,
+      "n": 30,
+      "consistency": 0.7667,
+      "answers": {
+        "O": 23,
+        "S": 7
+      },
+      "margin_mean": 0.0508
+    }
+  ],
+  "first_sweep": [
+    {
+      "digit": "0",
+      "pred": 7,
+      "guess": "G",
+      "correct": false,
+      "score": 38.0,
+      "runner_up": "O",
+      "runner_up_score": 38.0,
+      "margin": 0.0,
+      "bitmap": [
+        ".###.",
+        "#...#",
+        "#..##",
+        "#.#.#",
+        "##..#",
+        "#...#",
+        ".###."
+      ]
+    },
+    {
+      "digit": "1",
+      "pred": 9,
+      "guess": "I",
+      "correct": false,
+      "score": 56.0,
+      "runner_up": "T",
+      "runner_up_score": 37.0,
+      "margin": 0.3393,
+      "bitmap": [
+        "..#..",
+        ".##..",
+        "..#..",
+        "..#..",
+        "..#..",
+        "..#..",
+        ".###."
+      ]
+    },
+    {
+      "digit": "2",
+      "pred": 17,
+      "guess": "Q",
+      "correct": false,
+      "score": 25.0,
+      "runner_up": "D",
+      "runner_up_score": 22.0,
+      "margin": 0.12,
+      "bitmap": [
+        ".###.",
+        "#...#",
+        "....#",
+        "...#.",
+        "..#..",
+        ".#...",
+        "#####"
+      ]
+    },
+    {
+      "digit": "3",
+      "pred": 26,
+      "guess": "Z",
+      "correct": false,
+      "score": 25.0,
+      "runner_up": "S",
+      "runner_up_score": 24.0,
+      "margin": 0.04,
+      "bitmap": [
+        "#####",
+        "...#.",
+        "..#..",
+        "...#.",
+        "....#",
+        "#...#",
+        ".###."
+      ]
+    },
+    {
+      "digit": "4",
+      "pred": 0,
+      "guess": " ",
+      "correct": false,
+      "score": 28.0,
+      "runner_up": "A",
+      "runner_up_score": 20.0,
+      "margin": 0.2857,
+      "bitmap": [
+        "...#.",
+        "..##.",
+        ".#.#.",
+        "#..#.",
+        "#####",
+        "...#.",
+        "...#."
+      ]
+    },
+    {
+      "digit": "5",
+      "pred": 4,
+      "guess": "D",
+      "correct": false,
+      "score": 30.0,
+      "runner_up": "O",
+      "runner_up_score": 27.0,
+      "margin": 0.1,
+      "bitmap": [
+        "#####",
+        "#....",
+        "####.",
+        "....#",
+        "....#",
+        "#...#",
+        ".###."
+      ]
+    },
+    {
+      "digit": "6",
+      "pred": 7,
+      "guess": "G",
+      "correct": false,
+      "score": 35.0,
+      "runner_up": "B",
+      "runner_up_score": 32.0,
+      "margin": 0.0857,
+      "bitmap": [
+        "..##.",
+        ".#...",
+        "#....",
+        "####.",
+        "#...#",
+        "#...#",
+        ".###."
+      ]
+    },
+    {
+      "digit": "7",
+      "pred": 26,
+      "guess": "Z",
+      "correct": false,
+      "score": 42.0,
+      "runner_up": " ",
+      "runner_up_score": 20.0,
+      "margin": 0.5238,
+      "bitmap": [
+        "#####",
+        "....#",
+        "...#.",
+        "..#..",
+        ".#...",
+        ".#...",
+        ".#..."
+      ]
+    },
+    {
+      "digit": "8",
+      "pred": 2,
+      "guess": "B",
+      "correct": false,
+      "score": 39.0,
+      "runner_up": "O",
+      "runner_up_score": 37.0,
+      "margin": 0.0513,
+      "bitmap": [
+        ".###.",
+        "#...#",
+        "#...#",
+        ".###.",
+        "#...#",
+        "#...#",
+        ".###."
+      ]
+    },
+    {
+      "digit": "9",
+      "pred": 15,
+      "guess": "O",
+      "correct": false,
+      "score": 38.0,
+      "runner_up": "S",
+      "runner_up_score": 35.0,
+      "margin": 0.0789,
+      "bitmap": [
+        ".###.",
+        "#...#",
+        "#...#",
+        ".####",
+        "....#",
+        "...#.",
+        ".##.."
+      ]
+    }
+  ]
+}

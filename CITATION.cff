@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you cite this work, please use the metadata below."
+title: "FlyBrain: teaching a 27-cell mushroom-body model to read, and proving what it cannot read"
+abstract: >-
+  A spiking classifier whose only plastic synapses are the 13,824 KC->MBON
+  weights of a simplified mushroom-body model, trained on a hand-drawn 5x7
+  bitmap alphabet with three-factor reward-modulated STDP. The circuit reaches
+  100.0% holdout accuracy on 27 symbols (26 letters plus a blank) and is then
+  shown ten digits it has no output cell for. It answers all 300 digit
+  presentations with a letter, gets 0 correct, and its weight matrices and
+  checkpoint are byte-identical before and after - the negative control is
+  hashed rather than asserted. No connectome is used; the package docstring
+  says so explicitly.
+authors:
+  - name: "Ascendstarcel"
+type: software
+license: MIT
+date-released: "2026-08-31"
+keywords:
+  - spiking neural network
+  - mushroom body
+  - reward-modulated STDP
+  - three-factor learning
+  - optical character recognition
+  - negative control
+  - reproducibility
+
+repository-code: "https://github.com/Ascendstarcel/FruitFlyBrain_AlphabetTrainings"

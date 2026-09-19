@@ -1,0 +1,1308 @@
+{
+  "source": "flybrain.pt (epoch 400)",
+  "epoch": 400,
+  "document": {
+    "title": "Theodore Kaczynski - The Unabomber Manifesto_ Industrial Society and Its Future (2011).pdf",
+    "kind": "pdf",
+    "pages": 132,
+    "chars": 209939,
+    "counts": {
+      "letter": 169527,
+      "digit": 1050,
+      "space": 34521,
+      "unreadable": 4841
+    },
+    "sha256": "c3d558655c6498eced3a8fe72f18899fd082492ebbbd19e1e9a95b73bee851af",
+    "bytes": 669627
+  },
+  "looks": 4,
+  "limit": null,
+  "read": {
+    "presented": 204556,
+    "hit": 203104,
+    "accuracy_pct": 99.29,
+    "answerable": 203506,
+    "answerable_hit": 203104,
+    "answerable_accuracy_pct": 99.8,
+    "stepped_over": 5383,
+    "chance_pct": 3.7,
+    "elapsed_s": 1300.23,
+    "chars_per_s": 157.3
+  },
+  "buckets": {
+    "letter": {
+      "shown": 168985,
+      "hit": 168985,
+      "accuracy_pct": 100.0,
+      "margin_mean": 0.3135
+    },
+    "space": {
+      "shown": 34521,
+      "hit": 34119,
+      "accuracy_pct": 98.84,
+      "margin_mean": 0.329
+    },
+    "digit": {
+      "shown": 1050,
+      "hit": 0,
+      "accuracy_pct": 0.0,
+      "margin_mean": 0.1801
+    }
+  },
+  "digit_answers": {
+    "0": {
+      "G": 56,
+      "O": 40
+    },
+    "1": {
+      "I": 253
+    },
+    "2": {
+      "Q": 139,
+      "D": 23
+    },
+    "3": {
+      "Z": 90,
+      "D": 1
+    },
+    "4": {
+      " ": 78
+    },
+    "5": {
+      "D": 72,
+      "G": 2,
+      "U": 2
+    },
+    "6": {
+      "B": 35,
+      "G": 30,
+      "C": 6
+    },
+    "7": {
+      "Z": 74
+    },
+    "8": {
+      "B": 55,
+      "C": 1,
+      "O": 11
+    },
+    "9": {
+      "O": 66,
+      "S": 16
+    }
+  },
+  "answers_sha256": "d895f5d2429627cc45714b3dc83904091c2f41637676f8faa4c5d890588599af",
+  "alphabet_holdout_accuracy": 1.0,
+  "sample_transcript": "INDUSTRIAL SOCIETY AND ITS FUTURE BY THEODORE KACZYNSKI IN IOOD KACZYNSKI MAILED SEVERAL LETTERS SOME TO HIS FORMER VICTIMS OUTLINING HIS GOALS AND DEMANDING THAT HIS ZDGOGWORD PAPER INDUSTRIAL SOCIETY AND ITS FUTURE ALSO CALLED THE UNABOMBER MANIFESTO BE PRINTED VERBATIM BY A MAJOR NEWSPAPER OR JOURNAL HE STATED THATRHE WOULD THEN END HIS TERRORISM CAMPAIGN THERE WASRA GREAT DEAL OF CONTROVERSY A",
+  "first_errors": [
+    {
+      "at": 331,
+      "shown": " ",
+      "said": "R",
+      "margin": 0.0476
+    },
+    {
+      "at": 383,
+      "shown": " ",
+      "said": "R",
+      "margin": 0.1304
+    },
+    {
+      "at": 1141,
+      "shown": " ",
+      "said": "R",
+      "margin": 0.1304
+    },
+    {
+      "at": 1869,
+      "shown": " ",
+      "said": "B",
+      "margin": 0.1429
+    },
+    {
+      "at": 2123,
+      "shown": " ",
+      "said": "P",
+      "margin": 0.0476
+    },
+    {
+      "at": 2240,
+      "shown": " ",
+      "said": "Z",
+      "margin": 0.0526
+    },
+    {
+      "at": 4294,
+      "shown": " ",
+      "said": "U",
+      "margin": 0.12
+    },
+    {
+      "at": 5551,
+      "shown": " ",
+      "said": "O",
+      "margin": 0.1667
+    },
+    {
+      "at": 5806,
+      "shown": " ",
+      "said": "Y",
+      "margin": 0.0435
+    },
+    {
+      "at": 6151,
+      "shown": " ",
+      "said": "Z",
+      "margin": 0.08
+    },
+    {
+      "at": 6573,
+      "shown": " ",
+      "said": "Z",
+      "margin": 0.0455
+    },
+    {
+      "at": 6750,
+      "shown": " ",
+      "said": "M",
+      "margin": 0.0476
+    },
+    {
+      "at": 6881,
+      "shown": " ",
+      "said": "B",
+      "margin": 0.1
+    },
+    {
+      "at": 7440,
+      "shown": " ",
+      "said": "S",
+      "margin": 0.1739
+    },
+    {
+      "at": 7777,
+      "shown": " ",
+      "said": "M",
+      "margin": 0.05
+    },
+    {
+      "at": 8323,
+      "shown": " ",
+      "said": "A",
+      "margin": 0.1429
+    },
+    {
+      "at": 8669,
+      "shown": " ",
+      "said": "Q",
+      "margin": 0.16
+    },
+    {
+      "at": 9522,
+      "shown": " ",
+      "said": "J",
+      "margin": 0.1111
+    },
+    {
+      "at": 9627,
+      "shown": " ",
+      "said": "Q",
+      "margin": 0.0476
+    },
+    {
+      "at": 10511,
+      "shown": " ",
+      "said": "Z",
+      "margin": 0.0435
+    },
+    {
+      "at": 10631,
+      "shown": " ",
+      "said": "R",
+      "margin": 0.1818
+    },
+    {
+      "at": 11055,
+      "shown": " ",
+      "said": "R",
+      "margin": 0.0952
+    },
+    {
+      "at": 11286,
+      "shown": " ",
+      "said": "J",
+      "margin": 0.0476
+    },
+    {
+      "at": 12190,
+      "shown": " ",
+      "said": "Q",
+      "margin": 0.08
+    },
+    {
+      "at": 12213,
+      "shown": " ",
+      "said": "W",
+      "margin": 0.0588
+    },
+    {
+      "at": 12456,
+      "shown": " ",
+      "said": "A",
+      "margin": 0.0476
+    },
+    {
+      "at": 12689,
+      "shown": " ",
+      "said": "O",
+      "margin": 0.125
+    },
+    {
+      "at": 12990,
+      "shown": " ",
+      "said": "A",
+      "margin": 0.05
+    },
+    {
+      "at": 13110,
+      "shown": " ",
+      "said": "H",
+      "margin": 0.0455
+    },
+    {
+      "at": 14298,
+      "shown": " ",
+      "said": "H",
+      "margin": 0.1818
+    },
+    {
+      "at": 14377,
+      "shown": " ",
+      "said": "A",
+      "margin": 0.0476
+    },
+    {
+      "at": 15372,
+      "shown": " ",
+      "said": "U",
+      "margin": 0.0417
+    },
+    {
+      "at": 15840,
+      "shown": " ",
+      "said": "K",
+      "margin": 0.1
+    },
+    {
+      "at": 16173,
+      "shown": " ",
+      "said": "D",
+      "margin": 0.0526
+    },
+    {
+      "at": 16322,
+      "shown": " ",
+      "said": "R",
+      "margin": 0.0556
+    },
+    {
+      "at": 16698,
+      "shown": " ",
+      "said": "B",
+      "margin": 0.1053
+    },
+    {
+      "at": 16996,
+      "shown": " ",
+      "said": "G",
+      "margin": 0.0435
+    },
+    {
+      "at": 17128,
+      "shown": " ",
+      "said": "R",
+      "margin": 0.0476
+    },
+    {
+      "at": 17210,
+      "shown": " ",
+      "said": "A",
+      "margin": 0.0455
+    },
+    {
+      "at": 17501,
+      "shown": " ",
+      "said": "Q",
+      "margin": 0.0385
+    },
+    {
+      "at": 17700,
+      "shown": " ",
+      "said": "F",
+      "margin": 0.0435
+    },
+    {
+      "at": 18120,
+      "shown": " ",
+      "said": "R",
+      "margin": 0.1923
+    },
+    {
+      "at": 18566,
+      "shown": " ",
+      "said": "S",
+      "margin": 0.0455
+    },
+    {
+      "at": 20019,
+      "shown": " ",
+      "said": "A",
+      "margin": 0.0455
+    },
+    {
+      "at": 20247,
+      "shown": " ",
+      "said": "Z",
+      "margin": 0.04
+    },
+    {
+      "at": 20260,
+      "shown": " ",
+      "said": "S",
+      "margin": 0.05
+    },
+    {
+      "at": 20499,
+      "shown": " ",
+      "said": "C",
+      "margin": 0.0
+    },
+    {
+      "at": 21062,
+      "shown": " ",
+      "said": "A",
+      "margin": 0.2273
+    },
+    {
+      "at": 22802,
+      "shown": " ",
+      "said": "Q",
+      "margin": 0.1538
+    },
+    {
+      "at": 22913,
+      "shown": " ",
+      "said": "R",
+      "margin": 0.05
+    },
+    {
+      "at": 23215,
+      "shown": " ",
+      "said": "B",
+      "margin": 0.0
+    },
+    {
+      "at": 23369,
+      "shown": " ",
+      "said": "Z",
+      "margin": 0.0455
+    },
+    {
+      "at": 24186,
+      "shown": " ",
+      "said": "M",
+      "margin": 0.04
+    },
+    {
+      "at": 24925,
+      "shown": " ",
+      "said": "I",
+      "margin": 0.0741
+    },
+    {
+      "at": 25143,
+      "shown": " ",
+      "said": "K",
+      "margin": 0.087
+    },
+    {
+      "at": 25605,
+      "shown": " ",
+      "said": "R",
+      "margin": 0.0833
+    },
+    {
+      "at": 26094,
+      "shown": " ",
+      "said": "H",
+      "margin": 0.0417
+    },
+    {
+      "at": 26533,
+      "shown": " ",
+      "said": "S",
+      "margin": 0.0476
+    },
+    {
+      "at": 27239,
+      "shown": " ",
+      "said": "M",
+      "margin": 0.125
+    },
+    {
+      "at": 28445,
+      "shown": " ",
+      "said": "N",
+      "margin": 0.1111
+    },
+    {
+      "at": 29249,
+      "shown": " ",
+      "said": "R",
+      "margin": 0.1429
+    },
+    {
+      "at": 29263,
+      "shown": " ",
+      "said": "H",
+      "margin": 0.08
+    },
+    {
+      "at": 30780,
+      "shown": " ",
+      "said": "A",
+      "margin": 0.24
+    },
+    {
+      "at": 31245,
+      "shown": " ",
+      "said": "R",
+      "margin": 0.087
+    },
+    {
+      "at": 31593,
+      "shown": " ",
+      "said": "F",
+      "margin": 0.0526
+    },
+    {
+      "at": 31818,
+      "shown": " ",
+      "said": "R",
+      "margin": 0.0909
+    },
+    {
+      "at": 32329,
+      "shown": " ",
+      "said": "R",
+      "margin": 0.12
+    },
+    {
+      "at": 32374,
+      "shown": " ",
+      "said": "R",
+      "margin": 0.1905
+    },
+    {
+      "at": 32395,
+      "shown": " ",
+      "said": "R",
+      "margin": 0.1739
+    },
+    {
+      "at": 33361,
+      "shown": " ",
+      "said": "E",
+      "margin": 0.0625
+    },
+    {
+      "at": 34295,
+      "shown": " ",
+      "said": "F",
+      "margin": 0.0
+    },
+    {
+      "at": 34452,
+      "shown": " ",
+      "said": "K",
+      "margin": 0.0435
+    },
+    {
+      "at": 35148,
+      "shown": " ",
+      "said": "O",
+      "margin": 0.1818
+    },
+    {
+      "at": 35448,
+      "shown": " ",
+      "said": "S",
+      "margin": 0.1053
+    },
+    {
+      "at": 35472,
+      "shown": " ",
+      "said": "A",
+      "margin": 0.05
+    },
+    {
+      "at": 37875,
+      "shown": " ",
+      "said": "F",
+      "margin": 0.05
+    },
+    {
+      "at": 38773,
+      "shown": " ",
+      "said": "Q",
+      "margin": 0.12
+    },
+    {
+      "at": 38829,
+      "shown": " ",
+      "said": "R",
+      "margin": 0.1852
+    },
+    {
+      "at": 38872,
+      "shown": " ",
+      "said": "A",
+      "margin": 0.1
+    },
+    {
+      "at": 39320,
+      "shown": " ",
+      "said": "Q",
+      "margin": 0.0385
+    },
+    {
+      "at": 40215,
+      "shown": " ",
+      "said": "S",
+      "margin": 0.0435
+    },
+    {
+      "at": 41526,
+      "shown": " ",
+      "said": "R",
+      "margin": 0.05
+    },
+    {
+      "at": 42323,
+      "shown": " ",
+      "said": "B",
+      "margin": 0.05
+    },
+    {
+      "at": 43141,
+      "shown": " ",
+      "said": "K",
+      "margin": 0.0455
+    },
+    {
+      "at": 43552,
+      "shown": " ",
+      "said": "A",
+      "margin": 0.0526
+    },
+    {
+      "at": 43581,
+      "shown": " ",
+      "said": "G",
+      "margin": 0.0455
+    },
+    {
+      "at": 43618,
+      "shown": " ",
+      "said": "Z",
+      "margin": 0.04
+    },
+    {
+      "at": 44316,
+      "shown": " ",
+      "said": "R",
+      "margin": 0.0952
+    },
+    {
+      "at": 45360,
+      "shown": " ",
+      "said": "B",
+      "margin": 0.0476
+    },
+    {
+      "at": 46224,
+      "shown": " ",
+      "said": "J",
+      "margin": 0.0645
+    },
+    {
+      "at": 46612,
+      "shown": " ",
+      "said": "Z",
+      "margin": 0.0435
+    },
+    {
+      "at": 46778,
+      "shown": " ",
+      "said": "M",
+      "margin": 0.08
+    },
+    {
+      "at": 48191,
+      "shown": " ",
+      "said": "U",
+      "margin": 0.05
+    },
+    {
+      "at": 48505,
+      "shown": " ",
+      "said": "E",
+      "margin": 0.0526
+    },
+    {
+      "at": 48617,
+      "shown": " ",
+      "said": "A",
+      "margin": 0.0556
+    },
+    {
+      "at": 51504,
+      "shown": " ",
+      "said": "S",
+      "margin": 0.0417
+    },
+    {
+      "at": 51943,
+      "shown": " ",
+      "said": "A",
+      "margin": 0.125
+    },
+    {
+      "at": 52697,
+      "shown": " ",
+      "said": "R",
+      "margin": 0.1364
+    },
+    {
+      "at": 53189,
+      "shown": " ",
+      "said": "R",
+      "margin": 0.0476
+    },
+    {
+      "at": 54152,
+      "shown": " ",
+      "said": "N",
+      "margin": 0.0455
+    },
+    {
+      "at": 54503,
+      "shown": " ",
+      "said": "B",
+      "margin": 0.1667
+    },
+    {
+      "at": 55117,
+      "shown": " ",
+      "said": "R",
+      "margin": 0.05
+    },
+    {
+      "at": 56918,
+      "shown": " ",
+      "said": "A",
+      "margin": 0.05
+    },
+    {
+      "at": 57055,
+      "shown": " ",
+      "said": "S",
+      "margin": 0.0476
+    },
+    {
+      "at": 57225,
+      "shown": " ",
+      "said": "F",
+      "margin": 0.0909
+    },
+    {
+      "at": 57545,
+      "shown": " ",
+      "said": "R",
+      "margin": 0.0952
+    },
+    {
+      "at": 58054,
+      "shown": " ",
+      "said": "M",
+      "margin": 0.1071
+    },
+    {
+      "at": 58476,
+      "shown": " ",
+      "said": "R",
+      "margin": 0.0833
+    },
+    {
+      "at": 58781,
+      "shown": " ",
+      "said": "M",
+      "margin": 0.0476
+    },
+    {
+      "at": 58790,
+      "shown": " ",
+      "said": "A",
+      "margin": 0.0435
+    },
+    {
+      "at": 59081,
+      "shown": " ",
+      "said": "O",
+      "margin": 0.1667
+    },
+    {
+      "at": 59124,
+      "shown": " ",
+      "said": "M",
+      "margin": 0.087
+    },
+    {
+      "at": 60825,
+      "shown": " ",
+      "said": "B",
+      "margin": 0.05
+    },
+    {
+      "at": 61311,
+      "shown": " ",
+      "said": "M",
+      "margin": 0.0435
+    },
+    {
+      "at": 63387,
+      "shown": " ",
+      "said": "K",
+      "margin": 0.0952
+    },
+    {
+      "at": 66830,
+      "shown": " ",
+      "said": "F",
+      "margin": 0.28
+    },
+    {
+      "at": 66987,
+      "shown": " ",
+      "said": "I",
+      "margin": 0.0
+    },
+    {
+      "at": 67301,
+      "shown": " ",
+      "said": "O",
+      "margin": 0.05
+    },
+    {
+      "at": 67329,
+      "shown": " ",
+      "said": "J",
+      "margin": 0.037
+    },
+    {
+      "at": 68583,
+      "shown": " ",
+      "said": "H",
+      "margin": 0.05
+    },
+    {
+      "at": 68913,
+      "shown": " ",
+      "said": "Q",
+      "margin": 0.08
+    },
+    {
+      "at": 69371,
+      "shown": " ",
+      "said": "M",
+      "margin": 0.0435
+    },
+    {
+      "at": 69603,
+      "shown": " ",
+      "said": "Z",
+      "margin": 0.0476
+    },
+    {
+      "at": 70524,
+      "shown": " ",
+      "said": "O",
+      "margin": 0.0455
+    },
+    {
+      "at": 70980,
+      "shown": " ",
+      "said": "A",
+      "margin": 0.0952
+    },
+    {
+      "at": 71767,
+      "shown": " ",
+      "said": "W",
+      "margin": 0.125
+    },
+    {
+      "at": 72287,
+      "shown": " ",
+      "said": "L",
+      "margin": 0.25
+    },
+    {
+      "at": 73224,
+      "shown": " ",
+      "said": "M",
+      "margin": 0.0385
+    },
+    {
+      "at": 74110,
+      "shown": " ",
+      "said": "E",
+      "margin": 0.0526
+    },
+    {
+      "at": 75188,
+      "shown": " ",
+      "said": "A",
+      "margin": 0.2692
+    },
+    {
+      "at": 77435,
+      "shown": " ",
+      "said": "V",
+      "margin": 0.0526
+    },
+    {
+      "at": 77452,
+      "shown": " ",
+      "said": "K",
+      "margin": 0.125
+    },
+    {
+      "at": 77461,
+      "shown": " ",
+      "said": "N",
+      "margin": 0.05
+    },
+    {
+      "at": 77541,
+      "shown": " ",
+      "said": "S",
+      "margin": 0.0435
+    },
+    {
+      "at": 78168,
+      "shown": " ",
+      "said": "L",
+      "margin": 0.1364
+    },
+    {
+      "at": 78199,
+      "shown": " ",
+      "said": "G",
+      "margin": 0.087
+    },
+    {
+      "at": 79177,
+      "shown": " ",
+      "said": "H",
+      "margin": 0.0455
+    },
+    {
+      "at": 79493,
+      "shown": " ",
+      "said": "A",
+      "margin": 0.125
+    },
+    {
+      "at": 80567,
+      "shown": " ",
+      "said": "Z",
+      "margin": 0.0435
+    },
+    {
+      "at": 80681,
+      "shown": " ",
+      "said": "A",
+      "margin": 0.0909
+    },
+    {
+      "at": 80841,
+      "shown": " ",
+      "said": "A",
+      "margin": 0.0588
+    },
+    {
+      "at": 81166,
+      "shown": " ",
+      "said": "J",
+      "margin": 0.04
+    },
+    {
+      "at": 81270,
+      "shown": " ",
+      "said": "A",
+      "margin": 0.0
+    },
+    {
+      "at": 82709,
+      "shown": " ",
+      "said": "Q",
+      "margin": 0.04
+    },
+    {
+      "at": 84202,
+      "shown": " ",
+      "said": "D",
+      "margin": 0.0952
+    },
+    {
+      "at": 84817,
+      "shown": " ",
+      "said": "D",
+      "margin": 0.0952
+    },
+    {
+      "at": 84936,
+      "shown": " ",
+      "said": "M",
+      "margin": 0.0385
+    },
+    {
+      "at": 85049,
+      "shown": " ",
+      "said": "B",
+      "margin": 0.1
+    },
+    {
+      "at": 85983,
+      "shown": " ",
+      "said": "Z",
+      "margin": 0.087
+    },
+    {
+      "at": 86108,
+      "shown": " ",
+      "said": "I",
+      "margin": 0.069
+    },
+    {
+      "at": 86186,
+      "shown": " ",
+      "said": "E",
+      "margin": 0.0476
+    },
+    {
+      "at": 86299,
+      "shown": " ",
+      "said": "A",
+      "margin": 0.05
+    },
+    {
+      "at": 88285,
+      "shown": " ",
+      "said": "S",
+      "margin": 0.0476
+    },
+    {
+      "at": 89035,
+      "shown": " ",
+      "said": "B",
+      "margin": 0.1
+    },
+    {
+      "at": 89710,
+      "shown": " ",
+      "said": "B",
+      "margin": 0.0556
+    },
+    {
+      "at": 89978,
+      "shown": " ",
+      "said": "F",
+      "margin": 0.0
+    },
+    {
+      "at": 90418,
+      "shown": " ",
+      "said": "Z",
+      "margin": 0.0455
+    },
+    {
+      "at": 90448,
+      "shown": " ",
+      "said": "M",
+      "margin": 0.0435
+    },
+    {
+      "at": 90754,
+      "shown": " ",
+      "said": "K",
+      "margin": 0.1304
+    },
+    {
+      "at": 91200,
+      "shown": " ",
+      "said": "B",
+      "margin": 0.0
+    },
+    {
+      "at": 91706,
+      "shown": " ",
+      "said": "E",
+      "margin": 0.0556
+    },
+    {
+      "at": 91752,
+      "shown": " ",
+      "said": "X",
+      "margin": 0.0455
+    },
+    {
+      "at": 92212,
+      "shown": " ",
+      "said": "A",
+      "margin": 0.05
+    },
+    {
+      "at": 92823,
+      "shown": " ",
+      "said": "A",
+      "margin": 0.1818
+    },
+    {
+      "at": 93181,
+      "shown": " ",
+      "said": "A",
+      "margin": 0.05
+    },
+    {
+      "at": 93735,
+      "shown": " ",
+      "said": "R",
+      "margin": 0.0909
+    },
+    {
+      "at": 94361,
+      "shown": " ",
+      "said": "O",
+      "margin": 0.087
+    },
+    {
+      "at": 94538,
+      "shown": " ",
+      "said": "O",
+      "margin": 0.1667
+    },
+    {
+      "at": 95746,
+      "shown": " ",
+      "said": "Q",
+      "margin": 0.1304
+    },
+    {
+      "at": 95933,
+      "shown": " ",
+      "said": "Q",
+      "margin": 0.0417
+    },
+    {
+      "at": 96094,
+      "shown": " ",
+      "said": "A",
+      "margin": 0.0952
+    },
+    {
+      "at": 97018,
+      "shown": " ",
+      "said": "I",
+      "margin": 0.037
+    },
+    {
+      "at": 97428,
+      "shown": " ",
+      "said": "M",
+      "margin": 0.0833
+    },
+    {
+      "at": 99775,
+      "shown": " ",
+      "said": "S",
+      "margin": 0.0476
+    },
+    {
+      "at": 101290,
+      "shown": " ",
+      "said": "D",
+      "margin": 0.0
+    },
+    {
+      "at": 101769,
+      "shown": " ",
+      "said": "Q",
+      "margin": 0.0833
+    },
+    {
+      "at": 101791,
+      "shown": " ",
+      "said": "M",
+      "margin": 0.1071
+    },
+    {
+      "at": 101800,
+      "shown": " ",
+      "said": "E",
+      "margin": 0.0556
+    },
+    {
+      "at": 101985,
+      "shown": " ",
+      "said": "S",
+      "margin": 0.0476
+    },
+    {
+      "at": 103590,
+      "shown": " ",
+      "said": "N",
+      "margin": 0.08
+    },
+    {
+      "at": 103733,
+      "shown": " ",
+      "said": "S",
+      "margin": 0.08
+    },
+    {
+      "at": 103795,
+      "shown": " ",
+      "said": "R",
+      "margin": 0.0952
+    },
+    {
+      "at": 104203,
+      "shown": " ",
+      "said": "V",
+      "margin": 0.0435
+    },
+    {
+      "at": 104567,
+      "shown": " ",
+      "said": "R",
+      "margin": 0.0435
+    },
+    {
+      "at": 104590,
+      "shown": " ",
+      "said": "L",
+      "margin": 0.0909
+    },
+    {
+      "at": 104657,
+      "shown": " ",
+      "said": "T",
+      "margin": 0.0357
+    },
+    {
+      "at": 104824,
+      "shown": " ",
+      "said": "Q",
+      "margin": 0.0417
+    },
+    {
+      "at": 105637,
+      "shown": " ",
+      "said": "N",
+      "margin": 0.0833
+    },
+    {
+      "at": 106874,
+      "shown": " ",
+      "said": "I",
+      "margin": 0.069
+    },
+    {
+      "at": 107176,
+      "shown": " ",
+      "said": "O",
+      "margin": 0.0
+    },
+    {
+      "at": 107689,
+      "shown": " ",
+      "said": "A",
+      "margin": 0.0
+    },
+    {
+      "at": 108690,
+      "shown": " ",
+      "said": "R",
+      "margin": 0.0952
+    },
+    {
+      "at": 108918,
+      "shown": " ",
+      "said": "A",
+      "margin": 0.0455
+    },
+    {
+      "at": 109390,
+      "shown": " ",
+      "said": "A",
+      "margin": 0.1
+    },
+    {
+      "at": 109488,
+      "shown": " ",
+      "said": "G",
+      "margin": 0.0455
+    },
+    {
+      "at": 109707,
+      "shown": " ",
+      "said": "M",
+      "margin": 0.0435
+    },
+    {
+      "at": 111145,
+      "shown": " ",
+      "said": "A",
+      "margin": 0.0476
+    },
+    {
+      "at": 111160,
+      "shown": " ",
+      "said": "A",
+      "margin": 0.05
+    },
+    {
+      "at": 111529,
+      "shown": " ",
+      "said": "K",
+      "margin": 0.0833
+    },
+    {
+      "at": 112266,
+      "shown": " ",
+      "said": "B",
+      "margin": 0.2273
+    }
+  ],
+  "proof": {
+    "weights_sha256_before": "626bece30a76927e8fd124eef1c3fdc37e31c87b07c4d20636656141ee85d802",
+    "weights_sha256_after": "626bece30a76927e8fd124eef1c3fdc37e31c87b07c4d20636656141ee85d802",
+    "weights_unchanged": true,
+    "checkpoint_sha256_before": "1e56a34a4400ad4dc928e5989540d849a29348afe696eec1e69e56b684b42bb6",
+    "checkpoint_sha256_after": "1e56a34a4400ad4dc928e5989540d849a29348afe696eec1e69e56b684b42bb6",
+    "checkpoint_unchanged": true,
+    "plasticity_applied": false
+  }
+}

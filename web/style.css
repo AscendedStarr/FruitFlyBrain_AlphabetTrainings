@@ -1,0 +1,728 @@
+:root {
+  --bg: #0d1017;
+  --panel: #151a24;
+  --panel-2: #1c2230;
+  --line: #262e3d;
+  --ink: #e6ecf5;
+  --dim: #8b98ad;
+  --accent: #ffd166;
+  --good: #4ade80;
+  --bad: #f87171;
+  --plastic: #f0a84a;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 14px/1.5 "Segoe UI", system-ui, sans-serif;
+}
+
+header {
+  padding: 18px 22px 12px;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(180deg, #141a25, #0d1017);
+}
+
+h1 {
+  margin: 0;
+  font-size: 22px;
+  letter-spacing: .04em;
+  font-weight: 600;
+}
+
+h1::before { content: "⌁ "; color: var(--accent); }
+
+.sub { margin: 2px 0 12px; color: var(--dim); font-size: 13px; }
+
+.stats { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+.badge {
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-variant-numeric: tabular-nums;
+  font-size: 12px;
+  color: var(--dim);
+}
+
+.badge.on { color: var(--good); border-color: #2f5d3f; }
+.badge.off { color: var(--bad); border-color: #5d2f2f; }
+
+.toggle {
+  margin-left: auto;
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  font-size: 12px;
+  color: var(--dim);
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle input { accent-color: var(--accent); width: 15px; height: 15px; }
+
+main {
+  display: grid;
+  grid-template-columns: minmax(300px, 1fr) minmax(440px, 1.5fr) minmax(330px, 1.05fr);
+  gap: 14px;
+  padding: 14px;
+  align-items: start;
+}
+
+@media (max-width: 1180px) {
+  main { grid-template-columns: 1fr; }
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.panel h2 {
+  margin: 16px 0 8px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--dim);
+  font-weight: 600;
+}
+
+.panel h2:first-child { margin-top: 0; }
+
+.hint { color: var(--dim); font-size: 11.5px; margin: 4px 0 10px; }
+
+/* ------------------------------------------------------------------- the fly */
+.fly-wrap { display: flex; flex-direction: column; align-items: center; }
+
+/* the 3D view: a canvas the software renderer draws into, with the labelled
+   brain callout floating over its right-hand side */
+.fly-stage {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  height: 240px;
+}
+
+#cv-fly3d {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  background: radial-gradient(115% 85% at 38% 46%,
+              rgba(40,52,74,0.55) 0%, rgba(10,13,19,0) 72%);
+}
+
+.brain-hud {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 104px;
+  height: 104px;
+  margin-top: -52px;
+  pointer-events: none;
+}
+
+.brain-hud svg { display: block; width: 100%; height: 100%; overflow: visible; }
+
+/* --------------------------------------------------------------- the bubble
+   The fly says what it heard. Sits above the animal's head, grows from a rounded
+   rect, and carries a small tail made from a rotated square so it points down at
+   the fly. Hidden by default - the JS adds .show when there is something to say,
+   and .wrong tints it when the read-out did not match. */
+.bubble {
+  position: absolute;
+  left: 6%;
+  top: 4px;
+  max-width: 62%;
+  padding: 6px 11px 7px;
+  border-radius: 11px;
+  background: rgba(28, 38, 56, 0.94);
+  border: 1px solid rgba(120, 200, 255, 0.34);
+  color: #dceaf6;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.25;
+  white-space: pre-wrap;
+  word-break: break-word;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.42);
+  opacity: 0;
+  transform: translateY(5px) scale(0.94);
+  transform-origin: 12% 100%;
+  transition: opacity 160ms ease, transform 190ms cubic-bezier(.2,.9,.3,1.4),
+              border-color 220ms ease, background 220ms ease;
+  pointer-events: none;
+}
+
+.bubble.show { opacity: 1; transform: translateY(0) scale(1); }
+
+/* the tail: a square rotated 45deg, so it reads as a triangle once clipped */
+.bubble::after {
+  content: "";
+  position: absolute;
+  left: 16px;
+  bottom: -5px;
+  width: 9px;
+  height: 9px;
+  background: inherit;
+  border-right: 1px solid rgba(120, 200, 255, 0.34);
+  border-bottom: 1px solid rgba(120, 200, 255, 0.34);
+  transform: rotate(45deg);
+  border-bottom-right-radius: 2px;
+}
+
+/* it got the letter right: sugar */
+.bubble.right {
+  background: rgba(24, 48, 38, 0.95);
+  border-color: rgba(111, 224, 163, 0.55);
+  color: #d8ffe9;
+}
+.bubble.right::after { border-color: rgba(111, 224, 163, 0.55); }
+
+/* it got the letter wrong: bitter */
+.bubble.wrong {
+  background: rgba(52, 26, 32, 0.95);
+  border-color: rgba(230, 120, 140, 0.5);
+  color: #ffdfe4;
+}
+.bubble.wrong::after { border-color: rgba(230, 120, 140, 0.5); }
+
+/* the bubble is legible at the reduced canvas scale, but shrink the type too */
+@media (max-width: 520px) {
+  .bubble { font-size: 12px; max-width: 58%; }
+}
+
+.fly-caption {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 3px; margin-top: 8px; text-align: center;
+}
+
+/* the causal brain map: the signal chain, the vote strip and the reward loop */
+#cv-brain {
+  display: block;
+  width: 100%;
+  height: 290px;
+  border-radius: 8px;
+  background: #0a0d13;
+}
+
+#fly-state {
+  font-size: 13px; font-weight: 600; color: var(--dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.fly-caption .hint { margin: 0; max-width: 340px; }
+
+/* the mushroom body in the brain callout pulses when dopamine fires */
+#mb {
+  color: #ffe08a;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: color 0.35s ease;
+}
+
+#mb.warm { color: #fff6cf; }
+#mb.cold { color: #9ab7d8; }
+
+#mb.beat {
+  transform: scale(1.14);
+  transition: transform 0.16s ease-out, color 0.35s ease;
+}
+
+#mb-glow { pointer-events: none; }
+
+/* ------------------------------------------------------------------- readout */
+.readout {
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  min-height: 66px;
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+}
+
+.readout.ok { color: var(--good); border-color: #2f5d3f; }
+.readout.no { color: var(--bad); border-color: #5d2f2f; }
+/* the third state: a glyph the fly has no output cell for. neither a hit nor a
+   miss - it is outside the vocabulary, and saying so is the whole point. */
+.readout.unknown { color: var(--accent); border-color: #5c4a22; }
+.readout small { font-size: 12px; font-weight: 400; letter-spacing: 0; color: var(--dim); }
+.readout small.warn { color: var(--accent); }
+.readout small em { font-style: normal; color: var(--ink); }
+
+/* ------------------------------------------------------------------- stages */
+.stage { margin-bottom: 10px; }
+
+.stage-label {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-size: 11.5px; margin-bottom: 4px; gap: 10px;
+}
+
+.stage-label b { color: var(--ink); font-weight: 600; }
+.stage-label span { color: var(--dim); text-align: right; }
+
+canvas {
+  width: 100%;
+  display: block;
+  background: #0a0d13;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  image-rendering: pixelated;
+}
+
+/* ----------------------------------------------------------------- controls */
+.letters {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(30px, 1fr));
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.letters button {
+  aspect-ratio: 1;
+  font: 600 13px/1 ui-monospace, monospace;
+}
+
+button {
+  background: var(--panel-2);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 7px 11px;
+  cursor: pointer;
+  font-size: 12.5px;
+  transition: background .12s, border-color .12s, transform .06s;
+}
+
+button:hover { background: #242c3c; border-color: #3a4557; }
+button:active { transform: translateY(1px); }
+button:disabled { opacity: .45; cursor: progress; }
+
+button.primary { background: #2c3a2e; border-color: #3d5a41; color: #cdeccd; }
+button.primary:hover { background: #354735; }
+
+button.hot { border-color: var(--accent); color: var(--accent); }
+
+/* digit stimulus buttons: presentable, but explicitly not part of the answer set */
+.letters.digits button {
+  border-color: #4a3f2a;
+  color: #d9c48f;
+  background: #1e1a14;
+}
+.letters.digits button:hover { background: #2a2418; border-color: #6b5a38; }
+.letters.digits button.on { border-color: var(--accent); background: #322a18; color: var(--accent); }
+
+.row { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+.row input {
+  flex: 1; min-width: 130px;
+  background: #0a0d13;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  border-radius: 6px;
+  padding: 7px 10px;
+  font: 600 13px/1 ui-monospace, monospace;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.row input:focus { outline: none; border-color: var(--accent); }
+
+.said {
+  font: 700 16px/1.6 ui-monospace, monospace;
+  letter-spacing: .12em;
+  min-height: 24px;
+  margin-bottom: 6px;
+  word-break: break-all;
+}
+.said .hit { color: var(--good); }
+.said .miss { color: var(--bad); text-decoration: underline wavy; }
+/* a digit: presented, but with no output cell to be right about */
+.said .unknown { color: var(--accent); text-decoration: underline dotted; }
+/* no glyph at all: never presented, so never scored */
+.said .skip { color: #55607a; text-decoration: line-through; }
+
+/* ------------------------------------------------------- the digit control */
+.proof {
+  width: 100%;
+  border-collapse: collapse;
+  font: 11.5px/1.5 ui-monospace, monospace;
+  margin: 2px 0 8px;
+}
+.proof th {
+  text-align: left;
+  color: var(--dim);
+  font-weight: 600;
+  border-bottom: 1px solid var(--line);
+  padding: 3px 6px 4px 0;
+  white-space: nowrap;
+}
+.proof td {
+  padding: 3px 6px 3px 0;
+  border-bottom: 1px solid #1b212c;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.proof td.digit { color: var(--accent); font-weight: 700; }
+.proof td.guess { color: var(--bad); font-weight: 700; }
+.proof td.num { color: var(--dim); text-align: right; }
+.proof tr.tie td.guess { color: #f0a84a; }
+.proof .tie-mark { color: #f0a84a; font-size: 10px; }
+
+.verdict {
+  border: 1px solid #5d2f2f;
+  background: #1d1417;
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+.verdict b { color: var(--bad); }
+.verdict .ok { color: var(--good); }
+.verdict code {
+  font-family: ui-monospace, monospace;
+  background: #0a0d13;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 0 3px;
+  color: var(--accent);
+}
+
+.progress {
+  height: 3px; background: var(--panel-2); border-radius: 2px;
+  overflow: hidden; margin-bottom: 8px;
+}
+#bar { height: 100%; width: 0; background: var(--accent); transition: width .2s; }
+
+.log {
+  font: 11.5px/1.6 ui-monospace, monospace;
+  color: var(--dim);
+  max-height: 92px;
+  overflow-y: auto;
+}
+.log div::before { content: "› "; color: #46536a; }
+
+/* -------------------------------------------------------------------- tabs */
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin: 0 0 12px;
+  padding: 3px;
+  background: #10141d;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.tab {
+  flex: 1;
+  padding: 6px 10px;
+  font: 600 11px/1 "Segoe UI", system-ui, sans-serif;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--dim);
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 6px;
+}
+
+.tab:hover { color: var(--ink); background: #1a2130; }
+.tab.on { background: #232b3c; border-color: #384257; color: var(--accent); }
+
+.pane[hidden] { display: none; }
+
+/* --------------------------------------------------------------- documents */
+
+.drop {
+  position: relative;
+  border: 1px dashed #38435a;
+  border-radius: 8px;
+  background: #10141d;
+  padding: 14px 12px;
+  text-align: center;
+  margin-bottom: 10px;
+  transition: border-color .12s, background .12s;
+}
+
+.drop.over { border-color: var(--accent); background: #1a1a12; }
+
+/* the real input sits invisibly on top, so the whole panel is clickable and
+   the browser still opens its own picker */
+.drop input[type=file] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.drop-face b { display: block; font-size: 13px; }
+.drop-face span { display: block; color: var(--dim); font-size: 11.5px; margin-top: 2px; }
+
+#doc-paste {
+  letter-spacing: normal;
+  text-transform: none;
+  font-weight: 400;
+}
+
+.doc-card {
+  background: #10141d;
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--accent);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font: 11.5px/1.7 ui-monospace, monospace;
+  color: var(--dim);
+  margin-bottom: 10px;
+  word-break: break-word;
+}
+
+.doc-card b { color: var(--ink); }
+
+.doc-card .tag {
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0 7px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+}
+
+.doc-card code,
+.doc-error {
+  font: 11.5px/1.6 ui-monospace, monospace;
+}
+
+.doc-card code {
+  background: #1b2130;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 0 4px;
+  color: var(--accent);
+}
+
+.doc-error {
+  background: #1c1215;
+  border: 1px solid #5d2f2f;
+  border-left: 2px solid var(--bad);
+  border-radius: 6px;
+  padding: 8px 10px;
+  color: #f5b5b5;
+  margin-bottom: 10px;
+}
+
+#doc-where {
+  font: 11.5px/1.7 ui-monospace, monospace;
+  color: var(--dim);
+  margin-bottom: 8px;
+}
+
+#doc-where b { color: var(--ink); }
+#doc-where code {
+  background: #1b2130;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 0 4px;
+  color: var(--accent);
+}
+
+/* the page the fly is on, with the character it is reading lit up */
+.doc-viewer {
+  max-height: 190px;
+  overflow-y: auto;
+  background: #0a0d13;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 9px 11px;
+  margin-bottom: 10px;
+  font: 12.5px/1.85 ui-monospace, monospace;
+  color: #9fb0c9;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.doc-viewer .cur {
+  background: var(--accent);
+  color: #14181f;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px var(--accent), 0 0 12px rgba(255, 209, 102, .55);
+}
+
+/* a space gets the highlight block but keeps its width */
+.doc-viewer .cur.blank { background: rgba(255, 209, 102, .55); }
+
+.doc-viewer .un {
+  color: #55607a;
+  text-decoration: line-through;
+}
+
+.doc-viewer .ell { color: #3d475c; font-style: normal; }
+
+#doc-speed { flex: 1; min-width: 90px; accent-color: var(--accent); }
+
+#doc-bar { height: 100%; width: 0; background: var(--accent); transition: width .15s; }
+
+#doc-now,
+#doc-tally {
+  font: 11.5px/1.7 ui-monospace, monospace;
+  color: var(--dim);
+  margin-bottom: 8px;
+}
+
+#doc-now .hit { color: var(--good); }
+#doc-now .miss { color: var(--bad); }
+#doc-now .unk,
+#doc-tally .unk { color: var(--accent); }
+#doc-tally .hit { color: var(--good); }
+#doc-tally .miss { color: var(--bad); }
+
+.un { color: #55607a; }
+
+.doc-feed {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  max-height: 120px;
+  overflow-y: auto;
+  background: #0a0d13;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 6px;
+  margin-bottom: 8px;
+}
+
+/* newest first, so the leftmost square is the character being read now */
+.doc-feed .cell {
+  width: 19px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  font: 600 11px/1 ui-monospace, monospace;
+  border: 1px solid transparent;
+  background: #1a2130;
+  color: var(--dim);
+}
+
+.doc-feed .cell.hit { color: var(--good); border-color: #2f5d3f; background: #16241a; }
+.doc-feed .cell.miss { color: var(--bad); border-color: #5d2f2f; background: #241618; text-decoration: line-through; }
+.doc-feed .cell.unknown { color: var(--accent); border-color: #5c4a22; background: #241f14; }
+.doc-feed .cell.skip { color: #4c566d; border-color: #232a38; background: #12161e; text-decoration: line-through; }
+
+button.running { background: #3a2c22; border-color: #6b4a38; color: #f0c48a; }
+
+/* legend swatches: the same borders and colours as the feed squares, so the
+   key cannot drift away from what it is describing */
+.sw {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  border: 1px solid transparent;
+  vertical-align: -1px;
+}
+
+.sw.hit { color: var(--good); border-color: #2f5d3f; background: #16241a; }
+.sw.miss { color: var(--bad); border-color: #5d2f2f; background: #241618; }
+.sw.unknown { color: var(--accent); border-color: #5c4a22; background: #241f14; }
+.sw.skip { border-color: #232a38; background: #12161e; }
+
+/* ------------------------------------------------- what it has read so far */
+/* Sits directly under the MBON vote strip: the strip is the answer for one
+   character, this is what a run of answers adds up to. */
+
+.tx {
+  margin-top: 16px;
+  padding-top: 13px;
+  border-top: 1px solid var(--line);
+}
+
+.tx-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tx-head b { font-size: 13px; color: var(--ink); font-weight: 600; }
+.tx-head button { margin-left: auto; padding: 3px 10px; font-size: 11.5px; }
+
+.tx-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.tx-lab {
+  flex: 0 0 66px;
+  text-align: right;
+  padding-top: 3px;
+  color: #55607a;
+  font: 600 10px/1.6 ui-monospace, monospace;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.tx-blank { color: #3d475c; font-style: normal; }
+
+/* the word being spelled right now */
+#tx-word {
+  flex: 1;
+  min-height: 26px;
+  padding: 2px 0;
+  font: 600 17px/1.5 ui-monospace, monospace;
+  letter-spacing: .18em;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.tx-text {
+  flex: 1;
+  max-height: 200px;
+  overflow-y: auto;
+  background: #0a0d13;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font: 13px/1.9 ui-monospace, monospace;
+  color: #c3cfe2;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* the same four colours as the feed squares, so one legend covers both */
+.tx-text .hit { color: var(--good); }
+.tx-text .miss { color: var(--bad); text-decoration: line-through; }
+.tx-text .unknown { color: var(--accent); }
+.tx-text .skip { color: #3d475c; text-decoration: line-through; }
+
+/* the character that just went in */
+.tx-text .now {
+  background: rgba(255, 209, 102, .22);
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(255, 209, 102, .35);
+}
+
+.tx-text .ell { color: #3d475c; font-style: normal; }
+
+.tx-stat {
+  font: 11.5px/1.7 ui-monospace, monospace;
+  color: var(--dim);
+  margin-bottom: 4px;
+}
+
+.tx-stat .hit { color: var(--good); }
+.tx-stat .miss { color: var(--bad); }
+.tx-stat .unk { color: var(--accent); }
