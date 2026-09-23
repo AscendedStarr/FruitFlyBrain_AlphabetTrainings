@@ -2,7 +2,7 @@
 
     python fly_brain.py demo
     python fly_brain.py train --epochs 60
-    python fly_brain.py say "my name is jeff"
+    python fly_brain.py say "philippe delambre"
     python fly_brain.py diag
 """
 
@@ -16,7 +16,7 @@ import time
 from flybrain import CLASSES, Config, FlyBrain, render
 from flybrain.encoding import FONT_5X7
 
-PHRASE = "MY NAME IS JEFF"
+PHRASE = "PHILIPPE DELAMBRE"
 DEFAULT_CKPT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "runs", "flybrain.pt")
 
 

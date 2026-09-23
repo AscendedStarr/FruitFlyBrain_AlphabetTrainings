@@ -4,8 +4,8 @@ The blank is the one class with 0 lit pixels of 35. Its Kenyon-cell code is
 therefore driven by nothing but the baseline Poisson noise, so how well it can be
 read is a question of how many looks are averaged - and it needs far more looks
 than a letter does. `classes.py` reported 10/10 at 4 looks, but that is 10
-samples, which is not enough to tell 100% from 92%: over the 2 spaces in
-"MY NAME IS JEFF" a 92% blank is wrong about 15% of the time.
+samples, which is not enough to tell 100% from 92%: the demo phrase contains a
+single blank, so the whole phrase is only as reliable as the blank class is.
 
 This measures the blank properly, and checks that extra looks do not start
 hurting the 26 real letters (they should only help: averaging reduces variance).
@@ -58,5 +58,5 @@ for looks in (1, 2, 4, 6, 8, 12, 16):
     print(f"{looks:>6} {blank_hits / N:>7.1%} {letters:>8.1%} {overall:>8.1%}   {worst_s}")
 
 print("-" * 70)
-print("'MY NAME IS JEFF' has 2 blanks, so the phrase survives 10/10 blanks")
-print("about (blank accuracy)^2 of the time.")
+print("'PHILIPPE DELAMBRE' has one blank, so the phrase is exactly as")
+print("reliable as the blank row above.")

@@ -20,6 +20,30 @@ class Config:
     fan_in: int = 16            # PNs sampled per KC (in vivo ~5-10 out of ~150)
     k_active: int = 60          # KC sparsity target, ~12% (in vivo 5-10%)
 
+    # --- where the fixed PN -> KC wiring comes from ----------------------------
+    # The Kenyon cell expansion is the one layer a connectome can genuinely
+    # supply, because it is genetically determined rather than learned: the
+    # fly does not learn which odour channels a Kenyon cell listens to. The
+    # plastic synapses stay where the fly keeps them, on KC -> MBON.
+    #
+    #   "random"              seeded random sampling of `fan_in` PNs per KC.
+    #                         This is the exact code path v0.1.0 ships, so its
+    #                         published numbers stay reproducible, and it is the
+    #                         "no connectome" arm of the comparison - run it at
+    #                         the connectome's dimensions with
+    #                         Connectome.as_config_overrides().
+    #   "connectome"          the measured hemibrain v1.2 PN -> KC wiring
+    #                         (Scheffer et al. 2020, CC BY 4.0). See
+    #                         flybrain/connectome.py for exactly which part of
+    #                         it is measured and which is a modelling choice.
+    #   "connectome-shuffled" the same connectome with every KC's partner set
+    #                         randomised while keeping that KC's degree. The
+    #                         control that separates "these specific partners"
+    #                         from "this many partners".
+    wiring: str = "random"
+    # Path to the compact subgraph. Empty means <repo>/data/hemibrain_mb.npz.
+    connectome_path: str = ""
+
     # --- antennal lobe: graded, probabilistic response -------------------------
     # Each PN fires at a per-timestep probability given by a logistic function of
     # its synaptic drive, which gives a wide dynamic range.

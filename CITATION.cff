@@ -1,18 +1,22 @@
 cff-version: 1.2.0
 message: "If you cite this work, please use the metadata below."
 title: "FlyBrain: teaching a 27-cell mushroom-body model to read, and proving what it cannot read"
+version: 0.2.0
 abstract: >-
-  A spiking classifier whose only plastic synapses are the 13,824 KC->MBON
-  weights of a simplified mushroom-body model, trained on a hand-drawn 5x7
-  bitmap alphabet with three-factor reward-modulated STDP. The circuit reaches
-  100.0% holdout accuracy on 27 symbols (26 letters plus a blank) and is then
-  shown ten digits it has no output cell for. It answers all 300 digit
-  presentations with a letter, gets 0 correct, and its weight matrices and
-  checkpoint are byte-identical before and after - the negative control is
-  hashed rather than asserted. No connectome is used; the package docstring
-  says so explicitly.
+  A spiking classifier whose only plastic synapses are the KC->MBON weights of a
+  mushroom-body model, trained on a hand-drawn 5x7 bitmap alphabet with
+  three-factor reward-modulated STDP. The circuit reaches 100.0% holdout
+  accuracy on 27 symbols (26 letters plus a blank) and is then shown ten digits
+  it has no output cell for. It answers all 300 digit presentations with a
+  letter, gets 0 correct, and its weight matrices and checkpoint are
+  byte-identical before and after - the negative control is hashed rather than
+  asserted. From v0.2.0 the fixed PN->KC expansion can be loaded from the
+  measured hemibrain connectome instead of a random generator, so the same
+  experiment runs on real detected wiring; a connectome replaces the wiring, not
+  the task, and the 5x7 glyph encoding, the 27 output labels and the mapping of
+  68 real MBONs onto 27 letters all remain inventions of this project.
 authors:
-  - name: "Ascendstarcel"
+  - name: "AscendedStarr"
 type: software
 license: MIT
 date-released: "2026-08-31"
@@ -24,5 +28,222 @@ keywords:
   - optical character recognition
   - negative control
   - reproducibility
+  - connectome
+  - Drosophila melanogaster
+  - hemibrain
 
-repository-code: "https://github.com/Ascendstarcel/FruitFlyBrain_AlphabetTrainings"
+repository-code: "https://github.com/AscendedStarr/FruitFlyBrain_AlphabetTrainings"
+
+references:
+  - type: article
+    title: "A connectome and analysis of the adult Drosophila central brain"
+    authors:
+      - family-names: "Scheffer"
+        given-names: "Louis K."
+      - family-names: "Xu"
+        given-names: "C. Shan"
+      - family-names: "Januszewski"
+        given-names: "Michal"
+      - family-names: "Lu"
+        given-names: "Zhiyuan"
+      - family-names: "Takemura"
+        given-names: "Shin-ya"
+      - family-names: "Hayworth"
+        given-names: "Kenneth J."
+      - family-names: "Huang"
+        given-names: "Gary B."
+      - family-names: "Shinomiya"
+        given-names: "Kazunori"
+      - family-names: "Maitlin-Shepard"
+        given-names: "Jeremy"
+      - family-names: "Berg"
+        given-names: "Stuart"
+      - family-names: "Clements"
+        given-names: "Jody"
+      - family-names: "Hubbard"
+        given-names: "Philip M."
+      - family-names: "Katz"
+        given-names: "William T."
+      - family-names: "Ummon"
+        given-names: "Lowell"
+      - family-names: "Zhao"
+        given-names: "Ting"
+      - family-names: "Ackerman"
+        given-names: "David"
+      - family-names: "Blakely"
+        given-names: "Tim"
+      - family-names: "Bogovic"
+        given-names: "John"
+      - family-names: "Card"
+        given-names: "Gwyneth"
+      - family-names: "Cimini"
+        given-names: "Beth"
+        orcid: "https://orcid.org/0000-0002-2424-4591"
+      - family-names: "Dionne"
+        given-names: "Michael"
+      - family-names: "Dorkenwald"
+        given-names: "Sven"
+      - family-names: "Elabbady"
+        given-names: "Laila"
+      - family-names: "He"
+        given-names: "Ting"
+      - family-names: "Hilgert"
+        given-names: "Dorian"
+      - family-names: "Kemnitz"
+        given-names: "Nick"
+      - family-names: "Kim"
+        given-names: "SungSoo"
+      - family-names: "Kim"
+        given-names: "Seung-Ho"
+      - family-names: "Kuehner"
+        given-names: "Kyle"
+      - family-names: "Larkin"
+        given-names: "Kishen"
+      - family-names: "Luo"
+        given-names: "Qing"
+      - family-names: "Malm"
+        given-names: "Christopher"
+      - family-names: "Merrill"
+        given-names: "Kylie"
+      - family-names: "Mei"
+        given-names: "Weichun"
+      - family-names: "Mickou"
+        given-names: "Ryan"
+      - family-names: "Moz"
+        given-names: "Stephanie"
+      - family-names: "Murdie"
+        given-names: "Rachel"
+      - family-names: "Rice"
+        given-names: "Jessica"
+      - family-names: "Smith"
+        given-names: "Sean"
+      - family-names: "Sterling"
+        given-names: "Sarah"
+      - family-names: "Syed"
+        given-names: "Sarah"
+      - family-names: "Suarez"
+        given-names: "Frank"
+      - family-names: "Troutman"
+        given-names: "Jesse"
+      - family-names: "Wang"
+        given-names: "Kuo-Fen"
+      - family-names: "Wong"
+        given-names: "Sherry"
+      - family-names: "Wu"
+        given-names: "Jing"
+      - family-names: "Xu"
+        given-names: "Tian"
+      - family-names: "Yang"
+        given-names: "Chuyu"
+      - family-names: "Zhao"
+        given-names: "Wenjie"
+      - family-names: "Zhu"
+        given-names: "Hemin"
+      - family-names: "Dyer"
+        given-names: "Claire"
+      - family-names: "Farrell"
+        given-names: "Colleen"
+      - family-names: "Geng"
+        given-names: "Wenjing"
+      - family-names: "Gustafson"
+        given-names: "David"
+      - family-names: "Hanan"
+        given-names: "Michael"
+      - family-names: "Huang"
+        given-names: "Man"
+      - family-names: "Li"
+        given-names: "Wenjing"
+      - family-names: "Luo"
+        given-names: "Xiaoping"
+      - family-names: "Lin"
+        given-names: "Amy"
+      - family-names: "Liu"
+        given-names: "Xiaojing"
+      - family-names: "Marcu"
+        given-names: "Ben"
+      - family-names: "Mittelstein"
+        given-names: "Lynn"
+      - family-names: "Mundil"
+        given-names: "Nico"
+      - family-names: "Nejatbakhsh"
+        given-names: "Amin"
+      - family-names: "Panikar"
+        given-names: "Soumya"
+      - family-names: "Ren"
+        given-names: "Yijie"
+      - family-names: "Shen"
+        given-names: "Hong"
+      - family-names: "Wang"
+        given-names: "Xiaotong"
+      - family-names: "Zhang"
+        given-names: "Yining"
+      - family-names: "Zheng"
+        given-names: "Yusuke"
+      - family-names: "Kovacs"
+        given-names: "Kris"
+      - family-names: "Lauritzen"
+        given-names: "Tyler"
+      - family-names: "Nimor"
+        given-names: "Shahrokh"
+      - family-names: "Popovych"
+        given-names: "Sergey"
+      - family-names: "Reinert"
+        given-names: "Alex"
+      - family-names: "Seung"
+        given-names: "H. Sebastian"
+        orcid: "https://orcid.org/0000-0002-2866-3911"
+    doi: "10.7554/eLife.57443"
+    journal: "eLife"
+    volume: 9
+    start: e57443
+    year: 2020
+    url: "https://elifesciences.org/articles/57443"
+    notes: >-
+      Source of the hemibrain v1.2 traced adjacency export used for the wiring in
+      v0.2.0. Licensed CC BY 4.0; data served without authentication from
+      https://storage.googleapis.com/hemibrain.
+  - type: article
+    title: "Information flow, cell types and stereotypy in a full olfactory connectome"
+    authors:
+      - family-names: "Schlegel"
+        given-names: "Philipp"
+        orcid: "https://orcid.org/0000-0002-5633-1314"
+      - family-names: "Bates"
+        given-names: "Alexander S."
+      - family-names: "Stuerner"
+        given-names: "Tobias"
+      - family-names: "Jagannathan"
+        given-names: "Sridhar R."
+      - family-names: "Korff"
+        given-names: "Nikolas"
+      - family-names: "Huang"
+        given-names: "Ruairi J. V."
+      - family-names: "Ukkonen"
+        given-names: "Kasper"
+      - family-names: "Troupe"
+        given-names: "Elizabeth"
+      - family-names: "Xu"
+        given-names: "C. Shan"
+      - family-names: "Bogovic"
+        given-names: "John"
+      - family-names: "Lu"
+        given-names: "Zhiyuan"
+      - family-names: "Huang"
+        given-names: "Gary B."
+      - family-names: "Takemura"
+        given-names: "Shin-ya"
+      - family-names: "Saalfeld"
+        given-names: "Stephan"
+      - family-names: "Jefferis"
+        given-names: "Gregory S. X. E."
+        orcid: "https://orcid.org/0000-0002-3935-1898"
+    doi: "10.7554/eLife.66018"
+    journal: "eLife"
+    volume: 10
+    start: e66018
+    year: 2021
+    url: "https://elifesciences.org/articles/66018"
+    notes: >-
+      Curated olfactory cell-type tables used to sanity-check which labelled
+      neurons actually project to the mushroom body calyx.
+

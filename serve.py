@@ -60,7 +60,7 @@ MIME = {".html": "text/html", ".js": "text/javascript",
 # nothing but noise and the prior can separate it from any other near-empty
 # input. Measured against the trained checkpoint (see classes.py):
 #
-#     1 look   26/27 classes perfect, blank 5/10  ("MY NAME IS JEFF" -> MYSNAMESISOJEFF)
+#     1 look   26/27 classes perfect, blank 5/10  (a phrase's spaces come out as letters)
 #     2 looks  26/27 classes perfect, blank 9/10
 #     4 looks  27/27 classes perfect  <- phrase reads exactly
 #
@@ -666,7 +666,7 @@ class Handler(BaseHTTPRequestHandler):
                 else:
                     self._json(payload)
             elif route == "/api/say":
-                self._json(SESSION.say(body.get("phrase", "MY NAME IS JEFF"),
+                self._json(SESSION.say(body.get("phrase", "PHILIPPE DELAMBRE"),
                                        bool(body.get("learn", False))))
             elif route == "/api/train":
                 self._json(SESSION.train(int(body.get("epochs", 5))))

@@ -384,7 +384,7 @@ async function train(epochs) {
 }
 
 async function say() {
-  const phrase = $('phrase').value || 'MY NAME IS JEFF';
+  const phrase = $('phrase').value || 'PHILIPPE DELAMBRE';
   setBusy(true, 30);
   try {
     const r = await api('/api/say', { phrase, learn: state.learn });

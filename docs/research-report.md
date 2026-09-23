@@ -8,6 +8,12 @@ run, so the claims are checkable rather than asserted. `README.md` is the short
 version, `docs/methods.md` is the modelling detail, `MODEL_CARD.md` is the
 limitations. This document is the argument.
 
+**v0.2.0 adds a second experiment and one revised negative claim.** The `PN → KC`
+wiring can now be loaded from the measured hemibrain v1.2 connectome, and it was
+trained against two controls (§3.5, §7.1). Section 7.1 formally retracts the
+v0.1.0 statement that no connectome was present. The null result there is
+reported as a null result.
+
 ---
 
 ## 1. Summary
@@ -30,23 +36,46 @@ The same read-out was then run over a whole book: 132 pages, 209,939 characters.
 **168,985 letters, none wrong.** All 402 errors in the entire document were
 spaces. Every one of the 1,050 digits was wrong, as it must be.
 
+Finally, the fixed `PN → KC` expansion was replaced with the **measured**
+hemibrain v1.2 connectome — 157 projection neurons, 1,802 Kenyon cells, 185,994
+traced synapses — and the same task was trained on it three times. It reached
+**100.0%, 243/243**, matching the published result. A degree-matched shuffle that
+preserves every KC's exact partner count and weight multiset while randomising
+*which* partners **also reached 100.0%, 243/243 — a paired difference of exactly
+zero on every seed.** The honest conclusion is that at this task the specific
+detected partner identities contribute nothing measurable over equal-degree
+random partners. That is a negative result about this model, and §7.1 explains
+what it does and does not license.
+
 ---
 
 ## 2. What was built
 
 A classifier whose layers are named after the parts of an insect mushroom body.
-The anatomy is borrowed vocabulary, not a reconstruction — see §7.
+The default configuration is entirely synthetic. The `wiring="connectome"`
+configuration replaces the `PN → KC` matrix with measured anatomy — but only that
+matrix, so the anatomy is still borrowed *vocabulary* for every other stage. See
+§7.1.
 
-| Stage | Units | Update rule | Plastic |
+| Stage | Units (default · connectome) | Update rule | Plastic |
 | --- | --- | --- | --- |
-| Receptor sheet | 35 | 5×7 bitmap, greyscale | no |
-| Projection neurons | 128 | graded logistic | no |
-| Kenyon cells | 512 | sparse top-*k*, *k*=60, RMS-normalised, Poisson | no |
-| MBONs | 27 | single-compartment LIF, β=0.90, bias 0.12 | **yes** |
+| Receptor sheet | 35 · 35 | 5×7 bitmap, greyscale | no |
+| Projection neurons | 128 · 157 | graded logistic | no |
+| Kenyon cells | 512 (k=60) · 1802 (k=211) | sparse top-*k*, RMS-normalised, Poisson | no |
+| MBONs | 27 · 27 | single-compartment LIF, β=0.90, bias 0.12 | **yes** |
 | Dopamine | — | phasic burst, τ=3 steps, 1-step delay | — |
 
-**13,824 plastic synapses**, KC→MBON only: 512 × 27. Everything upstream is fixed.
-Chance is 3.7%.
+**Plastic synapses, KC→MBON only:** 13,824 (512 × 27) in the default
+configuration, 48,654 (1,802 × 27) in the connectome configuration. Everything
+upstream is fixed in both. Chance is 3.7%.
+
+The `PN → KC` matrix is the one place the two configurations differ:
+
+| Configuration | `PN → KC` |
+| --- | --- |
+| `wiring="random"` (default) | invented. Each KC samples 16 PNs uniformly. |
+| `wiring="connectome"` | **measured.** 12,426 traced hemibrain connections, 185,994 synapses. |
+| `wiring="connectome-shuffled"` | the same, with each KC's partner list permuted in place — exact degree and weight multiset preserved. |
 
 Two design choices are worth naming because they were arrived at by being wrong:
 
@@ -57,8 +86,11 @@ Two design choices are worth naming because they were arrived at by being wrong:
 - **The KC code is RMS-normalised, not peak-normalised.** Peak normalisation
   throws away total activity, and total activity is the only signal that
   distinguishes the blank glyph from a dim letter.
-
-### The learning rule
+- **A measured `PN → KC` matrix is re-scaled to the same L2 row norm as the
+  random one.** This was a deliberate control, not a convenience: the connectome
+  arm must not win because its rows happen to be louder. Three modelled choices —
+  √ synapse weighting, unit row norm, all-excitatory sign — are applied
+  identically to every arm, so they cannot manufacture an inter-arm difference.
 
 Three-factor reward-modulated STDP on KC→MBON:
 
@@ -203,6 +235,66 @@ Nothing was quietly dropped to make a denominator prettier. `str.isalpha()` is n
 a test for "the model can see this", and using it as one — here, and repeatedly
 during development — is the same bug class. Use the glyph table.
 
+### 3.5 The measured connectome, against two controls
+
+The synthetic `PN → KC` expansion was replaced with the measured hemibrain v1.2
+wiring and the same task was trained on it. `connectome_compare.py` holds
+everything fixed except that one matrix, and runs three arms:
+
+| Arm | `PN → KC` | What it isolates |
+| --- | --- | --- |
+| `connectome` | the measured wiring | — |
+| `connectome-shuffled` | each KC's partner list permuted in place, exact degree and weight multiset preserved | partner **identity** |
+| `random` | the synthetic path at the connectome's dimensions, uniform fan-in 6 | the synthetic baseline at matched scale |
+
+Three seeds, 400 epochs, 81-glyph holdout, 4 looks per answer:
+
+| Arm | seed 7 | seed 11 | seed 13 | pooled | conv. epoch | train s |
+| --- | --- | --- | --- | --- | --- | --- |
+| `connectome` | 81/81 | 81/81 | 81/81 | **243/243 = 100.0%** | 54 / 98 / 74 | 287 |
+| `connectome-shuffled` | 81/81 | 81/81 | 81/81 | **243/243 = 100.0%** | 53 / 88 / 72 | 257 |
+| `random` | 77/81 | 74/81 | 81/81 | 232/243 = 95.5% | 98 / 76 / 69 | 254 |
+
+Paired `connectome` − `connectome-shuffled`: **+0 items, on every seed.**
+
+The measured wiring reproduces the published result at its real dimensions:
+1,802 Kenyon cells, 185,994 measured synapses, 48,654 plastic synapses, 100.0%
+holdout, ~290 s on one thread. It runs, it converges, and it works.
+
+**The shuffle matches it exactly.** Permuting each Kenyon cell's partner list in
+place — preserving that cell's exact partner count *and* its exact multiset of
+synapse weights, changing only *which* partners they are — does not move the
+number at all. 243/243 against 243/243, three seeds, zero difference.
+
+The `random` arm is where the only gap appears, and it is a gap that must not be
+attributed to the connectome:
+
+| Arm | fan-in per KC |
+| --- | --- |
+| `connectome` | the real **distribution**: min 1, median 6, mean 6.90, max 21 |
+| `connectome-shuffled` | the real **distribution**, exactly |
+| `random` | uniform **6** for every KC |
+
+The two connectome arms share the real fan-in *distribution*; the random arm
+matches only its *mean*. So that comparison bundles partner identity with fan-in
+distribution and cannot separate them. Since the shuffle already eliminates
+identity as an explanation, the residual ~4.5-point difference is attributable to
+**the shape of the fan-in distribution and the larger circuit** (1,802 KCs and
+48,654 plastic synapses are both 3.5× the default), not to which specific
+partners the electron microscope detected.
+
+**Limitations that cut against this conclusion.** 27 clean hand-drawn glyphs is
+an easy task. The connectome and shuffled arms both sit at 81/81, so this is a
+comparison at ceiling: a 100.0% vs 100.0% tie demonstrates that the test cannot
+separate the arms, not that they are equivalent. The holdout is 81 items (one
+flake = 1.23 points) and there are three seeds — enough to see a consistent
+ceiling, not enough for an interval worth quoting. And the layer that actually
+learns, `KC → MBON` (48,654 plastic synapses), remains entirely invented, so any
+genuine anatomical advantage would have to survive that bottleneck to be visible.
+
+This is a **negative result about this model**, not a claim about *Drosophila*.
+It is reported because it is what the experiment returned.
+
 ---
 
 ## 4. Reproducibility, and two different kinds of hash
@@ -314,27 +406,81 @@ are not optional in practice.
 
 ## 7. What this is not
 
-### 7.1 There is no connectome here
+### 7.1 One layer is a real connectome, and it was tested
 
-The package docstring says it plainly: *"This is a brain-inspired spiking
-classifier, not an emulation of the FlyWire connectome."* No FlyWire, no
+**This section replaces an earlier claim that there is no connectome here. That
+claim was true in v0.1.0 and is false in v0.2.0.** It is left visible, rather
+than deleted, because the reversal is itself part of the record: the original
+version of this report stated, correctly at the time, that *"No FlyWire, no
 hemibrain, no neuPrint, no Codex, no electron-microscopy reconstruction of any
 kind is loaded, downloaded, or referenced at runtime. There is no wiring diagram
-in this repository.
+in this repository."* As of v0.2.0 there is.
 
-What is anatomy-*informed* is the shape and the cell counts:
+The `PN → KC` expansion can now be loaded from the **hemibrain v1.2** connectome
+(Scheffer et al. 2020, eLife 9:e57443, CC BY 4.0) instead of sampled from a
+generator. What that changes, and what it does not, is the whole point:
 
-| Stage | Here | In vivo | Gap |
-| --- | --- | --- | --- |
-| Receptors | 35 | ~3,000 ommatidia per eye | This is pixels, not photoreceptors |
-| PNs | 128 | ~150 uniglomerular | Close in count, not in kind |
-| KCs | 512 (k=60, ~12% active) | ~2,000 per hemisphere, 5–10% active | Sparser, fewer, each samples 16 PNs vs ~5–10 |
-| MBONs | 27 | tens per hemisphere | Chosen to fit the alphabet |
-| Plastic synapses | 13,824 dense random | sparse, stereotyped | **The largest gap in the model** |
+> **A connectome replaces the *wiring*, not the *task*.**
 
-So: "connectome" appears nowhere in this repository as a claim. The wiring is
-invented; the proportions are borrowed. Projects that run on real connectomes are
-a different kind of thing, and this one is honest about not being that.
+| Element | Status | Detail |
+| --- | --- | --- |
+| Which PNs feed which KCs | **Measured** | 12,426 traced connections, 185,994 synapses |
+| KC fan-in | **Measured** | min 1, median 6, mean 6.90, max 21 |
+| KC population | **Measured** | 1,802 KCs receiving PN input |
+| Synapse magnitude | Modelled | √(synapse count), applied identically to every arm |
+| Row scale | Modelled | unit L2 norm per KC, applied identically to every arm |
+| Synapse sign | Modelled | all excitatory (PN→KC is cholinergic) |
+| Receptor sheet, PNs, KCs, MBONs, `KC → MBON`, dopamine, the task | **Invented** | unchanged from v0.1.0 |
+
+The extraction required one non-obvious correction, and it is the part worth
+citing. The natural rule — a neuron is a projection neuron if its cell type
+contains `PN` — yielded 428 PNs, of which **271 had exactly zero synapses onto
+any Kenyon cell**. Verified three ways: those 271 have 39–780 outgoing edges
+each (median 126) and exactly zero onto KCs; their names are legitimate
+(`DA1_vPN`, `M_lvPNm24`, `WEDPN8C`); and the curated tables resolve it, with 140
+of 166 `mPN` having no KC output against 118 of 181 `uPN`. Those are
+lateral-horn-projecting cells, which is correct anatomy. Membership is therefore
+decided by **connectivity, not nomenclature**. Result: **157 PNs, 1,802 KCs**,
+unmatched edges 271 → 2.
+
+**The comparison.** `connectome_compare.py` trains three arms on the same task,
+same seed, same hyperparameters, with the `PN → KC` matrix as the only variable.
+Three seeds, 400 epochs, 81-glyph holdout:
+
+| Arm | seed 7 | seed 11 | seed 13 | pooled |
+| --- | --- | --- | --- | --- |
+| `connectome` | 81/81 | 81/81 | 81/81 | **243/243 = 100.0%** |
+| `connectome-shuffled` | 81/81 | 81/81 | 81/81 | **243/243 = 100.0%** |
+| `random` (uniform fan-in 6, same dims) | 77/81 | 74/81 | 81/81 | 232/243 = 95.5% |
+
+Paired `connectome` − `connectome-shuffled`: **+0 items on every seed.**
+
+**The finding is a negative one, and it is reported as such.** Destroying partner
+identity while preserving each KC's exact degree and weight multiset changes
+nothing measurable. The real connectome and its shuffled control are
+indistinguishable at 243/243. The `random` arm differs by ~4.5 points, but it
+differs along *two* axes at once — partner identity **and** fan-in distribution,
+since the connectome arms carry the real fan-in spread (min 1, median 6, mean
+6.90, max 21) while the random arm uses a uniform 6. Because the shuffle
+eliminates identity as the explanation, the residual gap is attributable to the
+**fan-in distribution and circuit size**, not to which specific partners the
+electron microscope detected.
+
+**And the test is underpowered in the direction that flatters this conclusion,
+which must be said out loud.** 27 clean glyphs is an easy task; once an arm
+reaches 81/81 there is no headroom, so a 100.0% vs 100.0% tie is evidence that
+the test cannot separate the arms, **not** evidence that they are equivalent.
+The holdout is 81 items (one flake = 1.23 points). Three seeds is enough to see a
+consistent ceiling, not enough for a confidence interval. And the layer that
+actually learns — `KC → MBON`, 48,654 plastic synapses — remains fully invented,
+so any real anatomical advantage would still have to survive that bottleneck.
+
+What the experiment legitimately establishes is narrower and still worth
+publishing: the real `PN → KC` wiring is correctly extracted, correctly scaled,
+and trains to the published accuracy at its real dimensions; and the specific
+detected partner identities are load-bearing for nothing at this task. **The
+second claim is a negative result about this model. It is not a claim about
+*Drosophila*.**
 
 ### 7.2 A fruit fly does not read
 
@@ -387,9 +533,15 @@ epoch 59.
 | Cherry-picked runs | Reproducibility claim is a weight digest over three independent runs | Different seeds were not swept |
 | Denominator games | All 209,939 characters accounted for; digits and unreadable counted | Accuracy is reported in three buckets so the framing is visible |
 | Structural error rate | Blank glyph is the sole error source and is reported as such | 98.8% on spaces could be improved by more looks |
+| **Task too easy to discriminate the connectome arms** | Stated, not hidden: §3.5 reports that 81/81 is a ceiling, so the tie cannot be read as equivalence | A harder task would be needed to test the claim properly; not attempted here |
+| **Fan-in distribution not isolated from partner identity** | The shuffle isolates identity; the fan-in asymmetry is spelled out in §3.5 | The `random` arm should be re-run at the real fan-in distribution to separate the two |
+| **Connectome arm claims only one measured layer** | §7.1 enumerates measured vs modelled vs invented line by line | `KC → MBON`, the plastic layer, remains invented and unvalidated |
 
 The one thing this report does **not** establish is that any of this transfers.
-Everything measured here is measured on a 5×7 font this project drew itself.
+Everything measured here is measured on a 5×7 font this project drew itself. The
+connectome result additionally establishes nothing about *Drosophila*: it says
+which cells connect to which, which is measured, and nothing about what they do
+with it, which is not.
 
 ---
 
@@ -397,9 +549,17 @@ Everything measured here is measured on a 5×7 font this project drew itself.
 
 | Path | Contents |
 | --- | --- |
-| `runs/flybrain.pt` | Trained circuit, epoch 400, 94,954 bytes |
+| `runs/flybrain.pt` | Trained circuit, default wiring, epoch 400, 94,954 bytes |
 | `runs/digit_proof.json` | 300 digit presentations, per-digit table, margins, hashes |
 | `runs/manifesto_read.json` | 204,556 presentations, per-bucket counts, digit answers, first errors, `answers_sha256`, proof block |
+| `runs/connectome_compare.json` | seed 7 comparison run: metadata, extraction rule, calyx filter rationale, per-arm results and accuracy curve |
+| `runs/compare_seeds1113.json` | seeds 11 and 13 comparison run, same schema |
+| `runs/compare_seed7.log`, `runs/compare_seeds1113.log` | Console logs of both comparison runs |
+| `runs/wiring_<arm>_seed<n>.pt` | Per-arm checkpoints. **Not tracked** (~229 KB × 9 = 2 MB); regenerable in ~40 min from the tracked `data/hemibrain_mb.npz` plus the committed seed. Every number they would prove is already in `runs/connectome_compare.json`, including the full accuracy curve. |
+| `data/hemibrain_mb.npz` | Derived hemibrain v1.2 subgraph: 157 PN → 1802 KC, 68 MBON, 322 DAN. 173.9 KB |
+| `flybrain/connectome.py` | Loader. The only module that knows a connectome exists |
+| `tools/build_connectome.py` | Extract the above from the public hemibrain bucket |
+| `connectome_compare.py` | The three-arm experiment |
 | `runs/flybrain.CLOBBERED-epoch61.pt` | Evidence for §7.4 |
 | `runs/schedule.log`, `runs/sweep.log` | Output of the long sweeps |
 
@@ -415,7 +575,19 @@ $env:OMP_NUM_THREADS=1
 .\.venv-flybrain\Scripts\python.exe serve.py                        # http://127.0.0.1:8000/
 .\.venv-flybrain\Scripts\python.exe read_document.py <your-book.pdf> --json runs/book_read.json
 ```
+The connectome experiment needs two more steps. `build_connectome.py` needs no
+credentials — the hemibrain bucket is public (CC BY 4.0) — and downloads ~46 MB.
+The derived subgraph it writes is 174 KB and is committed, so the download is
+only required if you want to rebuild the extract yourself.
 
+```powershell
+.\\.venv-flybrain\Scripts\python.exe tools/build_connectome.py    # ~46 MB download, -> data/hemibrain_mb.npz
+.\\.venv-flybrain\Scripts\python.exe connectome_compare.py --seeds 7,11,13 --epochs 400
+```
+
+That is nine trainings at ~260–310 s each, so budget roughly 40 minutes on one
+thread. `--quick --epochs 8` will smoke-test the plumbing in about 20 seconds
+without producing a number worth quoting.
 | Claim | How to check it | Measured |
 | --- | --- | --- |
 | Train loop from scratch | time `make_checkpoint.py` | 102.5 s, 400 epochs, one thread |
@@ -424,6 +596,9 @@ $env:OMP_NUM_THREADS=1
 | Digits cannot be named | `digit_proof.py --repeats 30` | 0/300, 300/300 in vocabulary |
 | Reading changes no weights | before/after hashes in both scripts | unchanged, both |
 | A book can be read | `read_document.py` on a 132-page PDF | 99.8% answerable |
+| The real connectome trains | `connectome_compare.py`, `connectome` arm | 100.0% holdout, 3 seeds |
+| Partner identity is not the ingredient | the `connectome-shuffled` arm, paired per seed | +0 items, every seed |
+| Fan-in distribution is the open question | compare `random` at uniform 6 vs the connectome's spread | not yet isolated — §3.5 |
 
 ### 10.1 Verified from a clean copy
 

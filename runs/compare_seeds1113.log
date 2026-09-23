@@ -1,0 +1,58 @@
+==========================================================================
+connectome vs controls -- the only variable is the PN -> KC matrix
+==========================================================================
+hemibrain v1.2 (CC BY 4.0) - Scheffer et al. 2020, eLife 9:e57443, doi:10.7554/eLife.57443
+  157 PN -> 1802 KC, 185,994 synapses in 12,426 traced connections
+  KC fan-in: min 1, median 6, mean 6.90, max 21
+  68 MBON, each sampling a median of 317 of the 1802 KCs (299,953 synapses)
+  322 DAN -> KC, 120,804 synapses
+
+dimensions taken from the connectome: {'n_pn': 157, 'n_kc': 1802, 'k_active': 211}
+random arm fan-in set to the connectome median: 6
+epochs=400  seeds=[11, 13]  arms=['connectome', 'connectome-shuffled', 'random']
+plastic KC -> MBON synapses per arm: 48654
+
+--------------------------------------------------------------------------
+ARM connectome   seed 11
+--------------------------------------------------------------------------
+  -> holdout 100.0%   converged epoch 98   287.4 s
+
+--------------------------------------------------------------------------
+ARM connectome-shuffled   seed 11
+--------------------------------------------------------------------------
+  -> holdout 100.0%   converged epoch 88   261.2 s
+
+--------------------------------------------------------------------------
+ARM random   seed 11
+--------------------------------------------------------------------------
+  -> holdout 91.4%   converged epoch 76   227.5 s
+
+--------------------------------------------------------------------------
+ARM connectome   seed 13
+--------------------------------------------------------------------------
+  -> holdout 100.0%   converged epoch 74   264.2 s
+
+--------------------------------------------------------------------------
+ARM connectome-shuffled   seed 13
+--------------------------------------------------------------------------
+  -> holdout 100.0%   converged epoch 72   268.5 s
+
+--------------------------------------------------------------------------
+ARM random   seed 13
+--------------------------------------------------------------------------
+  -> holdout 100.0%   converged epoch 69   270.9 s
+
+==========================================================================
+SUMMARY
+==========================================================================
+arm                        mean   spread    conv.ep    seconds
+connectome               100.0%     0.0%         86      275.8
+connectome-shuffled      100.0%     0.0%         80      264.8
+random                    95.7%     8.6%         72      249.2
+
+paired connectome - shuffled, per seed:
+  seed 11   +0.0 points  (100.0% vs 100.0%)
+  seed 13   +0.0 points  (100.0% vs 100.0%)
+
+wrote runs\compare_seeds1113.json
+checkpoints in runs

@@ -1,0 +1,285 @@
+==========================================================================
+connectome vs controls -- the only variable is the PN -> KC matrix
+==========================================================================
+hemibrain v1.2 (CC BY 4.0) - Scheffer et al. 2020, eLife 9:e57443, doi:10.7554/eLife.57443
+  157 PN -> 1802 KC, 185,994 synapses in 12,426 traced connections
+  KC fan-in: min 1, median 6, mean 6.90, max 21
+  68 MBON, each sampling a median of 317 of the 1802 KCs (299,953 synapses)
+  322 DAN -> KC, 120,804 synapses
+
+dimensions taken from the connectome: {'n_pn': 157, 'n_kc': 1802, 'k_active': 211}
+random arm fan-in set to the connectome median: 6
+epochs=400  seeds=[7]  arms=['connectome', 'connectome-shuffled', 'random']
+plastic KC -> MBON synapses per arm: 48654
+
+--------------------------------------------------------------------------
+ARM connectome   seed 7
+--------------------------------------------------------------------------
+  epoch   1/400  train-reward 0.019  eval-acc   4.9%  dopa-baseline +0.662  KC active 115
+  epoch   5/400  train-reward 0.139  eval-acc  44.4%  dopa-baseline +0.996  KC active 121
+  epoch  10/400  train-reward 0.417  eval-acc  74.1%  dopa-baseline +1.000  KC active 119
+  epoch  15/400  train-reward 0.481  eval-acc  74.1%  dopa-baseline +1.000  KC active 118
+  epoch  20/400  train-reward 0.389  eval-acc  67.9%  dopa-baseline +1.000  KC active 111
+  epoch  25/400  train-reward 0.500  eval-acc  85.2%  dopa-baseline +1.000  KC active 122
+  epoch  30/400  train-reward 0.454  eval-acc  90.1%  dopa-baseline +1.000  KC active 111
+  epoch  35/400  train-reward 0.472  eval-acc  87.7%  dopa-baseline +1.000  KC active 113
+  epoch  40/400  train-reward 0.602  eval-acc  93.8%  dopa-baseline +1.000  KC active 110
+  epoch  45/400  train-reward 0.491  eval-acc  96.3%  dopa-baseline +1.000  KC active 114
+  epoch  50/400  train-reward 0.463  eval-acc  96.3%  dopa-baseline +1.000  KC active 119
+  epoch  55/400  train-reward 0.481  eval-acc  95.1%  dopa-baseline +1.000  KC active 117
+  epoch  60/400  train-reward 0.546  eval-acc  98.8%  dopa-baseline +1.000  KC active 113
+  epoch  65/400  train-reward 0.528  eval-acc  93.8%  dopa-baseline +1.000  KC active 104
+  epoch  70/400  train-reward 0.500  eval-acc  96.3%  dopa-baseline +1.000  KC active 117
+  epoch  75/400  train-reward 0.509  eval-acc  93.8%  dopa-baseline +1.000  KC active 109
+  epoch  80/400  train-reward 0.537  eval-acc  97.5%  dopa-baseline +1.000  KC active 115
+  epoch  85/400  train-reward 0.583  eval-acc  96.3%  dopa-baseline +1.000  KC active 99
+  epoch  90/400  train-reward 0.583  eval-acc  98.8%  dopa-baseline +1.000  KC active 112
+  epoch  95/400  train-reward 0.565  eval-acc  97.5%  dopa-baseline +1.000  KC active 120
+  epoch 100/400  train-reward 0.620  eval-acc  97.5%  dopa-baseline +1.000  KC active 114
+  epoch 105/400  train-reward 0.519  eval-acc  98.8%  dopa-baseline +1.000  KC active 109
+  epoch 110/400  train-reward 0.583  eval-acc  97.5%  dopa-baseline +1.000  KC active 109
+  epoch 115/400  train-reward 0.546  eval-acc  96.3%  dopa-baseline +1.000  KC active 112
+  epoch 120/400  train-reward 0.509  eval-acc  92.6%  dopa-baseline +1.000  KC active 115
+  epoch 125/400  train-reward 0.500  eval-acc  93.8%  dopa-baseline +1.000  KC active 110
+  epoch 130/400  train-reward 0.454  eval-acc  96.3%  dopa-baseline +1.000  KC active 105
+  epoch 135/400  train-reward 0.491  eval-acc  97.5%  dopa-baseline +1.000  KC active 121
+  epoch 140/400  train-reward 0.593  eval-acc  96.3%  dopa-baseline +1.000  KC active 120
+  epoch 145/400  train-reward 0.481  eval-acc  97.5%  dopa-baseline +1.000  KC active 116
+  epoch 150/400  train-reward 0.481  eval-acc  97.5%  dopa-baseline +1.000  KC active 118
+  epoch 155/400  train-reward 0.565  eval-acc  98.8%  dopa-baseline +1.000  KC active 100
+  epoch 160/400  train-reward 0.556  eval-acc  97.5%  dopa-baseline +1.000  KC active 113
+  epoch 165/400  train-reward 0.574  eval-acc  98.8%  dopa-baseline +1.000  KC active 114
+  epoch 170/400  train-reward 0.583  eval-acc  97.5%  dopa-baseline +1.000  KC active 110
+  epoch 175/400  train-reward 0.509  eval-acc  95.1%  dopa-baseline +1.000  KC active 114
+  epoch 180/400  train-reward 0.463  eval-acc  96.3%  dopa-baseline +1.000  KC active 120
+  epoch 185/400  train-reward 0.481  eval-acc  96.3%  dopa-baseline +1.000  KC active 127
+  epoch 190/400  train-reward 0.509  eval-acc  97.5%  dopa-baseline +1.000  KC active 104
+  epoch 195/400  train-reward 0.528  eval-acc  96.3%  dopa-baseline +1.000  KC active 122
+  epoch 200/400  train-reward 0.546  eval-acc  97.5%  dopa-baseline +1.000  KC active 114
+  epoch 205/400  train-reward 0.546  eval-acc  98.8%  dopa-baseline +1.000  KC active 119
+  epoch 210/400  train-reward 0.546  eval-acc  98.8%  dopa-baseline +1.000  KC active 105
+  epoch 215/400  train-reward 0.565  eval-acc  96.3%  dopa-baseline +1.000  KC active 107
+  epoch 220/400  train-reward 0.611  eval-acc  98.8%  dopa-baseline +1.000  KC active 109
+  epoch 225/400  train-reward 0.556  eval-acc  97.5%  dopa-baseline +1.000  KC active 119
+  epoch 230/400  train-reward 0.500  eval-acc  97.5%  dopa-baseline +1.000  KC active 109
+  epoch 235/400  train-reward 0.481  eval-acc  93.8%  dopa-baseline +1.000  KC active 114
+  epoch 240/400  train-reward 0.583  eval-acc 100.0%  dopa-baseline +1.000  KC active 116
+  epoch 245/400  train-reward 0.620  eval-acc 100.0%  dopa-baseline +1.000  KC active 109
+  epoch 250/400  train-reward 0.491  eval-acc  97.5%  dopa-baseline +1.000  KC active 112
+  epoch 255/400  train-reward 0.528  eval-acc  96.3%  dopa-baseline +1.000  KC active 118
+  epoch 260/400  train-reward 0.565  eval-acc  96.3%  dopa-baseline +1.000  KC active 125
+  epoch 265/400  train-reward 0.509  eval-acc  96.3%  dopa-baseline +1.000  KC active 112
+  epoch 270/400  train-reward 0.519  eval-acc  96.3%  dopa-baseline +1.000  KC active 118
+  epoch 275/400  train-reward 0.620  eval-acc  93.8%  dopa-baseline +1.000  KC active 124
+  epoch 280/400  train-reward 0.556  eval-acc  95.1%  dopa-baseline +1.000  KC active 117
+  epoch 285/400  train-reward 0.528  eval-acc  97.5%  dopa-baseline +1.000  KC active 119
+  epoch 290/400  train-reward 0.519  eval-acc  97.5%  dopa-baseline +1.000  KC active 116
+  epoch 295/400  train-reward 0.481  eval-acc  98.8%  dopa-baseline +1.000  KC active 117
+  epoch 300/400  train-reward 0.500  eval-acc  96.3%  dopa-baseline +1.000  KC active 123
+  epoch 305/400  train-reward 0.546  eval-acc  96.3%  dopa-baseline +1.000  KC active 114
+  epoch 310/400  train-reward 0.528  eval-acc 100.0%  dopa-baseline +1.000  KC active 103
+  epoch 315/400  train-reward 0.528  eval-acc  97.5%  dopa-baseline +1.000  KC active 101
+  epoch 320/400  train-reward 0.583  eval-acc  95.1%  dopa-baseline +1.000  KC active 114
+  epoch 325/400  train-reward 0.593  eval-acc  98.8%  dopa-baseline +1.000  KC active 116
+  epoch 330/400  train-reward 0.537  eval-acc  96.3%  dopa-baseline +1.000  KC active 120
+  epoch 335/400  train-reward 0.472  eval-acc  98.8%  dopa-baseline +1.000  KC active 110
+  epoch 340/400  train-reward 0.519  eval-acc  97.5%  dopa-baseline +1.000  KC active 117
+  epoch 345/400  train-reward 0.537  eval-acc  98.8%  dopa-baseline +1.000  KC active 122
+  epoch 350/400  train-reward 0.426  eval-acc  98.8%  dopa-baseline +1.000  KC active 110
+  epoch 355/400  train-reward 0.537  eval-acc  96.3%  dopa-baseline +1.000  KC active 111
+  epoch 360/400  train-reward 0.593  eval-acc 100.0%  dopa-baseline +1.000  KC active 119
+  epoch 365/400  train-reward 0.620  eval-acc  95.1%  dopa-baseline +1.000  KC active 108
+  epoch 370/400  train-reward 0.500  eval-acc  98.8%  dopa-baseline +1.000  KC active 118
+  epoch 375/400  train-reward 0.574  eval-acc  97.5%  dopa-baseline +1.000  KC active 113
+  epoch 380/400  train-reward 0.583  eval-acc  96.3%  dopa-baseline +1.000  KC active 119
+  epoch 385/400  train-reward 0.481  eval-acc 100.0%  dopa-baseline +1.000  KC active 115
+  epoch 390/400  train-reward 0.509  eval-acc  98.8%  dopa-baseline +1.000  KC active 116
+  epoch 395/400  train-reward 0.472  eval-acc 100.0%  dopa-baseline +1.000  KC active 119
+  epoch 400/400  train-reward 0.565  eval-acc  96.3%  dopa-baseline +1.000  KC active 99
+  -> holdout 100.0%   converged epoch 54   308.9 s
+
+--------------------------------------------------------------------------
+ARM connectome-shuffled   seed 7
+--------------------------------------------------------------------------
+  epoch   1/400  train-reward 0.009  eval-acc   4.9%  dopa-baseline +0.662  KC active 113
+  epoch   5/400  train-reward 0.194  eval-acc  54.3%  dopa-baseline +0.996  KC active 96
+  epoch  10/400  train-reward 0.472  eval-acc  81.5%  dopa-baseline +1.000  KC active 102
+  epoch  15/400  train-reward 0.537  eval-acc  84.0%  dopa-baseline +1.000  KC active 108
+  epoch  20/400  train-reward 0.398  eval-acc  77.8%  dopa-baseline +1.000  KC active 103
+  epoch  25/400  train-reward 0.509  eval-acc  87.7%  dopa-baseline +1.000  KC active 116
+  epoch  30/400  train-reward 0.500  eval-acc  91.4%  dopa-baseline +1.000  KC active 109
+  epoch  35/400  train-reward 0.519  eval-acc  90.1%  dopa-baseline +1.000  KC active 109
+  epoch  40/400  train-reward 0.648  eval-acc  95.1%  dopa-baseline +1.000  KC active 110
+  epoch  45/400  train-reward 0.546  eval-acc  95.1%  dopa-baseline +1.000  KC active 112
+  epoch  50/400  train-reward 0.528  eval-acc  93.8%  dopa-baseline +1.000  KC active 110
+  epoch  55/400  train-reward 0.472  eval-acc  95.1%  dopa-baseline +1.000  KC active 108
+  epoch  60/400  train-reward 0.519  eval-acc  95.1%  dopa-baseline +1.000  KC active 106
+  epoch  65/400  train-reward 0.537  eval-acc  98.8%  dopa-baseline +1.000  KC active 101
+  epoch  70/400  train-reward 0.509  eval-acc  97.5%  dopa-baseline +1.000  KC active 98
+  epoch  75/400  train-reward 0.528  eval-acc  93.8%  dopa-baseline +1.000  KC active 111
+  epoch  80/400  train-reward 0.565  eval-acc 100.0%  dopa-baseline +1.000  KC active 109
+  epoch  85/400  train-reward 0.611  eval-acc  97.5%  dopa-baseline +1.000  KC active 113
+  epoch  90/400  train-reward 0.556  eval-acc  98.8%  dopa-baseline +1.000  KC active 111
+  epoch  95/400  train-reward 0.546  eval-acc  98.8%  dopa-baseline +1.000  KC active 106
+  epoch 100/400  train-reward 0.611  eval-acc  97.5%  dopa-baseline +1.000  KC active 127
+  epoch 105/400  train-reward 0.509  eval-acc 100.0%  dopa-baseline +1.000  KC active 114
+  epoch 110/400  train-reward 0.583  eval-acc  97.5%  dopa-baseline +1.000  KC active 119
+  epoch 115/400  train-reward 0.574  eval-acc  98.8%  dopa-baseline +1.000  KC active 106
+  epoch 120/400  train-reward 0.509  eval-acc  96.3%  dopa-baseline +1.000  KC active 112
+  epoch 125/400  train-reward 0.509  eval-acc  97.5%  dopa-baseline +1.000  KC active 103
+  epoch 130/400  train-reward 0.491  eval-acc  98.8%  dopa-baseline +1.000  KC active 103
+  epoch 135/400  train-reward 0.481  eval-acc  98.8%  dopa-baseline +1.000  KC active 105
+  epoch 140/400  train-reward 0.593  eval-acc  98.8%  dopa-baseline +1.000  KC active 100
+  epoch 145/400  train-reward 0.509  eval-acc 100.0%  dopa-baseline +1.000  KC active 112
+  epoch 150/400  train-reward 0.481  eval-acc 100.0%  dopa-baseline +1.000  KC active 118
+  epoch 155/400  train-reward 0.537  eval-acc  96.3%  dopa-baseline +1.000  KC active 124
+  epoch 160/400  train-reward 0.546  eval-acc  96.3%  dopa-baseline +1.000  KC active 112
+  epoch 165/400  train-reward 0.583  eval-acc  98.8%  dopa-baseline +1.000  KC active 103
+  epoch 170/400  train-reward 0.602  eval-acc 100.0%  dopa-baseline +1.000  KC active 113
+  epoch 175/400  train-reward 0.528  eval-acc  96.3%  dopa-baseline +1.000  KC active 111
+  epoch 180/400  train-reward 0.454  eval-acc 100.0%  dopa-baseline +1.000  KC active 104
+  epoch 185/400  train-reward 0.528  eval-acc  98.8%  dopa-baseline +1.000  KC active 111
+  epoch 190/400  train-reward 0.509  eval-acc  96.3%  dopa-baseline +1.000  KC active 101
+  epoch 195/400  train-reward 0.546  eval-acc  98.8%  dopa-baseline +1.000  KC active 117
+  epoch 200/400  train-reward 0.556  eval-acc  97.5%  dopa-baseline +1.000  KC active 101
+  epoch 205/400  train-reward 0.583  eval-acc 100.0%  dopa-baseline +1.000  KC active 110
+  epoch 210/400  train-reward 0.537  eval-acc 100.0%  dopa-baseline +1.000  KC active 103
+  epoch 215/400  train-reward 0.565  eval-acc  98.8%  dopa-baseline +1.000  KC active 108
+  epoch 220/400  train-reward 0.593  eval-acc  96.3%  dopa-baseline +1.000  KC active 113
+  epoch 225/400  train-reward 0.574  eval-acc  97.5%  dopa-baseline +1.000  KC active 110
+  epoch 230/400  train-reward 0.500  eval-acc  97.5%  dopa-baseline +1.000  KC active 110
+  epoch 235/400  train-reward 0.491  eval-acc  97.5%  dopa-baseline +1.000  KC active 122
+  epoch 240/400  train-reward 0.583  eval-acc 100.0%  dopa-baseline +1.000  KC active 101
+  epoch 245/400  train-reward 0.639  eval-acc  98.8%  dopa-baseline +1.000  KC active 110
+  epoch 250/400  train-reward 0.500  eval-acc 100.0%  dopa-baseline +1.000  KC active 109
+  epoch 255/400  train-reward 0.500  eval-acc  97.5%  dopa-baseline +1.000  KC active 115
+  epoch 260/400  train-reward 0.593  eval-acc 100.0%  dopa-baseline +1.000  KC active 101
+  epoch 265/400  train-reward 0.537  eval-acc  97.5%  dopa-baseline +1.000  KC active 102
+  epoch 270/400  train-reward 0.519  eval-acc 100.0%  dopa-baseline +1.000  KC active 113
+  epoch 275/400  train-reward 0.593  eval-acc  98.8%  dopa-baseline +1.000  KC active 118
+  epoch 280/400  train-reward 0.546  eval-acc  98.8%  dopa-baseline +1.000  KC active 105
+  epoch 285/400  train-reward 0.546  eval-acc  97.5%  dopa-baseline +1.000  KC active 105
+  epoch 290/400  train-reward 0.500  eval-acc  97.5%  dopa-baseline +1.000  KC active 102
+  epoch 295/400  train-reward 0.556  eval-acc  98.8%  dopa-baseline +1.000  KC active 122
+  epoch 300/400  train-reward 0.519  eval-acc  98.8%  dopa-baseline +1.000  KC active 111
+  epoch 305/400  train-reward 0.602  eval-acc  98.8%  dopa-baseline +1.000  KC active 115
+  epoch 310/400  train-reward 0.537  eval-acc 100.0%  dopa-baseline +1.000  KC active 109
+  epoch 315/400  train-reward 0.565  eval-acc  95.1%  dopa-baseline +1.000  KC active 105
+  epoch 320/400  train-reward 0.565  eval-acc  95.1%  dopa-baseline +1.000  KC active 111
+  epoch 325/400  train-reward 0.602  eval-acc  97.5%  dopa-baseline +1.000  KC active 123
+  epoch 330/400  train-reward 0.546  eval-acc  98.8%  dopa-baseline +1.000  KC active 110
+  epoch 335/400  train-reward 0.481  eval-acc  97.5%  dopa-baseline +1.000  KC active 103
+  epoch 340/400  train-reward 0.565  eval-acc  96.3%  dopa-baseline +1.000  KC active 115
+  epoch 345/400  train-reward 0.574  eval-acc  98.8%  dopa-baseline +1.000  KC active 114
+  epoch 350/400  train-reward 0.509  eval-acc  98.8%  dopa-baseline +1.000  KC active 111
+  epoch 355/400  train-reward 0.537  eval-acc  96.3%  dopa-baseline +1.000  KC active 122
+  epoch 360/400  train-reward 0.593  eval-acc  97.5%  dopa-baseline +1.000  KC active 107
+  epoch 365/400  train-reward 0.639  eval-acc  97.5%  dopa-baseline +1.000  KC active 95
+  epoch 370/400  train-reward 0.546  eval-acc  95.1%  dopa-baseline +1.000  KC active 116
+  epoch 375/400  train-reward 0.593  eval-acc 100.0%  dopa-baseline +1.000  KC active 118
+  epoch 380/400  train-reward 0.593  eval-acc  98.8%  dopa-baseline +1.000  KC active 107
+  epoch 385/400  train-reward 0.546  eval-acc 100.0%  dopa-baseline +1.000  KC active 103
+  epoch 390/400  train-reward 0.574  eval-acc  97.5%  dopa-baseline +1.000  KC active 114
+  epoch 395/400  train-reward 0.481  eval-acc  96.3%  dopa-baseline +1.000  KC active 112
+  epoch 400/400  train-reward 0.574  eval-acc  98.8%  dopa-baseline +1.000  KC active 104
+  -> holdout 100.0%   converged epoch 53   240.2 s
+
+--------------------------------------------------------------------------
+ARM random   seed 7
+--------------------------------------------------------------------------
+  epoch   1/400  train-reward 0.037  eval-acc   8.6%  dopa-baseline +0.662  KC active 99
+  epoch   5/400  train-reward 0.111  eval-acc  24.7%  dopa-baseline +0.996  KC active 91
+  epoch  10/400  train-reward 0.454  eval-acc  81.5%  dopa-baseline +1.000  KC active 86
+  epoch  15/400  train-reward 0.519  eval-acc  82.7%  dopa-baseline +1.000  KC active 108
+  epoch  20/400  train-reward 0.491  eval-acc  85.2%  dopa-baseline +1.000  KC active 103
+  epoch  25/400  train-reward 0.537  eval-acc  84.0%  dopa-baseline +1.000  KC active 97
+  epoch  30/400  train-reward 0.491  eval-acc  80.2%  dopa-baseline +1.000  KC active 115
+  epoch  35/400  train-reward 0.491  eval-acc  81.5%  dopa-baseline +1.000  KC active 111
+  epoch  40/400  train-reward 0.574  eval-acc  77.8%  dopa-baseline +1.000  KC active 104
+  epoch  45/400  train-reward 0.472  eval-acc  80.2%  dopa-baseline +1.000  KC active 110
+  epoch  50/400  train-reward 0.491  eval-acc  80.2%  dopa-baseline +1.000  KC active 106
+  epoch  55/400  train-reward 0.472  eval-acc  81.5%  dopa-baseline +1.000  KC active 102
+  epoch  60/400  train-reward 0.528  eval-acc  86.4%  dopa-baseline +1.000  KC active 111
+  epoch  65/400  train-reward 0.481  eval-acc  85.2%  dopa-baseline +1.000  KC active 106
+  epoch  70/400  train-reward 0.481  eval-acc  84.0%  dopa-baseline +1.000  KC active 115
+  epoch  75/400  train-reward 0.509  eval-acc  81.5%  dopa-baseline +1.000  KC active 100
+  epoch  80/400  train-reward 0.500  eval-acc  82.7%  dopa-baseline +1.000  KC active 119
+  epoch  85/400  train-reward 0.556  eval-acc  82.7%  dopa-baseline +1.000  KC active 100
+  epoch  90/400  train-reward 0.500  eval-acc  87.7%  dopa-baseline +1.000  KC active 97
+  epoch  95/400  train-reward 0.556  eval-acc  86.4%  dopa-baseline +1.000  KC active 105
+  epoch 100/400  train-reward 0.593  eval-acc  87.7%  dopa-baseline +1.000  KC active 98
+  epoch 105/400  train-reward 0.519  eval-acc  84.0%  dopa-baseline +1.000  KC active 111
+  epoch 110/400  train-reward 0.537  eval-acc  85.2%  dopa-baseline +1.000  KC active 98
+  epoch 115/400  train-reward 0.546  eval-acc  82.7%  dopa-baseline +1.000  KC active 103
+  epoch 120/400  train-reward 0.472  eval-acc  86.4%  dopa-baseline +1.000  KC active 103
+  epoch 125/400  train-reward 0.537  eval-acc  85.2%  dopa-baseline +1.000  KC active 102
+  epoch 130/400  train-reward 0.435  eval-acc  84.0%  dopa-baseline +1.000  KC active 106
+  epoch 135/400  train-reward 0.500  eval-acc  87.7%  dopa-baseline +1.000  KC active 106
+  epoch 140/400  train-reward 0.528  eval-acc  87.7%  dopa-baseline +1.000  KC active 106
+  epoch 145/400  train-reward 0.491  eval-acc  86.4%  dopa-baseline +1.000  KC active 101
+  epoch 150/400  train-reward 0.407  eval-acc  86.4%  dopa-baseline +1.000  KC active 98
+  epoch 155/400  train-reward 0.528  eval-acc  87.7%  dopa-baseline +1.000  KC active 97
+  epoch 160/400  train-reward 0.481  eval-acc  81.5%  dopa-baseline +1.000  KC active 95
+  epoch 165/400  train-reward 0.546  eval-acc  81.5%  dopa-baseline +1.000  KC active 108
+  epoch 170/400  train-reward 0.509  eval-acc  88.9%  dopa-baseline +1.000  KC active 104
+  epoch 175/400  train-reward 0.491  eval-acc  77.8%  dopa-baseline +1.000  KC active 94
+  epoch 180/400  train-reward 0.435  eval-acc  86.4%  dopa-baseline +1.000  KC active 100
+  epoch 185/400  train-reward 0.500  eval-acc  82.7%  dopa-baseline +1.000  KC active 100
+  epoch 190/400  train-reward 0.454  eval-acc  82.7%  dopa-baseline +1.000  KC active 105
+  epoch 195/400  train-reward 0.472  eval-acc  82.7%  dopa-baseline +1.000  KC active 104
+  epoch 200/400  train-reward 0.528  eval-acc  84.0%  dopa-baseline +1.000  KC active 101
+  epoch 205/400  train-reward 0.537  eval-acc  77.8%  dopa-baseline +1.000  KC active 108
+  epoch 210/400  train-reward 0.519  eval-acc  79.0%  dopa-baseline +1.000  KC active 111
+  epoch 215/400  train-reward 0.528  eval-acc  76.5%  dopa-baseline +1.000  KC active 100
+  epoch 220/400  train-reward 0.565  eval-acc  87.7%  dopa-baseline +1.000  KC active 102
+  epoch 225/400  train-reward 0.556  eval-acc  81.5%  dopa-baseline +1.000  KC active 113
+  epoch 230/400  train-reward 0.509  eval-acc  79.0%  dopa-baseline +1.000  KC active 97
+  epoch 235/400  train-reward 0.481  eval-acc  84.0%  dopa-baseline +1.000  KC active 104
+  epoch 240/400  train-reward 0.528  eval-acc  86.4%  dopa-baseline +1.000  KC active 99
+  epoch 245/400  train-reward 0.556  eval-acc  81.5%  dopa-baseline +1.000  KC active 106
+  epoch 250/400  train-reward 0.435  eval-acc  82.7%  dopa-baseline +1.000  KC active 98
+  epoch 255/400  train-reward 0.491  eval-acc  84.0%  dopa-baseline +1.000  KC active 102
+  epoch 260/400  train-reward 0.509  eval-acc  85.2%  dopa-baseline +1.000  KC active 99
+  epoch 265/400  train-reward 0.407  eval-acc  87.7%  dopa-baseline +1.000  KC active 105
+  epoch 270/400  train-reward 0.454  eval-acc  88.9%  dopa-baseline +1.000  KC active 110
+  epoch 275/400  train-reward 0.546  eval-acc  80.2%  dopa-baseline +1.000  KC active 114
+  epoch 280/400  train-reward 0.500  eval-acc  80.2%  dopa-baseline +1.000  KC active 104
+  epoch 285/400  train-reward 0.444  eval-acc  85.2%  dopa-baseline +1.000  KC active 104
+  epoch 290/400  train-reward 0.491  eval-acc  82.7%  dopa-baseline +1.000  KC active 99
+  epoch 295/400  train-reward 0.472  eval-acc  88.9%  dopa-baseline +1.000  KC active 101
+  epoch 300/400  train-reward 0.472  eval-acc  84.0%  dopa-baseline +1.000  KC active 111
+  epoch 305/400  train-reward 0.528  eval-acc  84.0%  dopa-baseline +1.000  KC active 110
+  epoch 310/400  train-reward 0.491  eval-acc  84.0%  dopa-baseline +1.000  KC active 112
+  epoch 315/400  train-reward 0.528  eval-acc  82.7%  dopa-baseline +1.000  KC active 109
+  epoch 320/400  train-reward 0.528  eval-acc  85.2%  dopa-baseline +1.000  KC active 107
+  epoch 325/400  train-reward 0.546  eval-acc  85.2%  dopa-baseline +1.000  KC active 104
+  epoch 330/400  train-reward 0.491  eval-acc  86.4%  dopa-baseline +1.000  KC active 97
+  epoch 335/400  train-reward 0.426  eval-acc  84.0%  dopa-baseline +1.000  KC active 111
+  epoch 340/400  train-reward 0.519  eval-acc  86.4%  dopa-baseline +1.000  KC active 93
+  epoch 345/400  train-reward 0.481  eval-acc  87.7%  dopa-baseline +1.000  KC active 103
+  epoch 350/400  train-reward 0.454  eval-acc  91.4%  dopa-baseline +1.000  KC active 105
+  epoch 355/400  train-reward 0.491  eval-acc  90.1%  dopa-baseline +1.000  KC active 108
+  epoch 360/400  train-reward 0.500  eval-acc  92.6%  dopa-baseline +1.000  KC active 103
+  epoch 365/400  train-reward 0.565  eval-acc  87.7%  dopa-baseline +1.000  KC active 111
+  epoch 370/400  train-reward 0.444  eval-acc  81.5%  dopa-baseline +1.000  KC active 105
+  epoch 375/400  train-reward 0.519  eval-acc  85.2%  dopa-baseline +1.000  KC active 97
+  epoch 380/400  train-reward 0.602  eval-acc  84.0%  dopa-baseline +1.000  KC active 107
+  epoch 385/400  train-reward 0.491  eval-acc  86.4%  dopa-baseline +1.000  KC active 104
+  epoch 390/400  train-reward 0.509  eval-acc  86.4%  dopa-baseline +1.000  KC active 103
+  epoch 395/400  train-reward 0.398  eval-acc  87.7%  dopa-baseline +1.000  KC active 112
+  epoch 400/400  train-reward 0.481  eval-acc  87.7%  dopa-baseline +1.000  KC active 104
+  -> holdout 95.1%   converged epoch 98   264.4 s
+
+==========================================================================
+SUMMARY
+==========================================================================
+arm                        mean   spread    conv.ep    seconds
+connectome               100.0%     0.0%         54      308.9
+connectome-shuffled      100.0%     0.0%         53      240.2
+random                    95.1%     0.0%         98      264.4
+
+paired connectome - shuffled, per seed:
+  seed 7    +0.0 points  (100.0% vs 100.0%)
+
+wrote C:\Users\user\Documents\Bug bounty\flybrain\runs\connectome_compare.json
+checkpoints in runs

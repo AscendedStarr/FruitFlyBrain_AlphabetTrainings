@@ -22,7 +22,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 brain = FlyBrain.load(os.path.join(HERE, "runs", "flybrain.pt"))
 letters = [c for c in CLASSES if c != " "]
 print(f"epoch {brain.epoch}, one-shot holdout {brain.evaluate():.1%}\n")
-print(f"{'looks':>6} {'accuracy':>9}   phrase 'MY NAME IS JEFF'")
+print(f"{'looks':>6} {'accuracy':>9}   phrase 'PHILIPPE DELAMBRE'")
 
 
 def accuracy(repeats: int, trials: int = 5) -> float:

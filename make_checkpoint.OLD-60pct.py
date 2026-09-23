@@ -31,6 +31,6 @@ acc = brain.evaluate()
 print()
 print(f"holdout accuracy after {EPOCHS} epochs: {acc:.1%}")
 print(f"chance = {100 / cfg.n_mbon:.1f}%   "
-      f"phrase 'MY NAME IS JEFF' read correctly: {acc ** 12:.4%}")
+      f"phrase 'PHILIPPE DELAMBRE' read correctly: {acc ** 16:.4%}")
 brain.save(OUT, note=f"{acc:.1%} after {EPOCHS} epochs (fixed credit rule)")
 print(f"saved -> {OUT}")

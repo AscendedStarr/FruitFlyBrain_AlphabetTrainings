@@ -16,8 +16,20 @@ __pycache__/
 # scratch probes - anything named *_probe.json is a temporary run, not a result
 *_probe.json
 
+# raw connectome downloads (~46 MB). Rebuildable with tools/build_connectome.py,
+# which documents the exact source URLs. The derived, compressed subgraph in
+# data/hemibrain_mb.npz IS tracked - that is the artifact, this is the input.
+_connectome/
+
 # editor / os
 .vscode/
 .idea/
 Thumbs.db
 .DS_Store
+
+# Per-arm checkpoints from connectome_compare.py (~229 KB each, 9 of them, 2 MB
+# total). These are regenerable in ~40 min from the tracked data/hemibrain_mb.npz
+# plus the committed seed, and every number they would prove is already in
+# runs/connectome_compare.json (which includes the full accuracy curve). The
+# canonical trained model, runs/flybrain.pt, IS tracked.
+runs/wiring_*.pt

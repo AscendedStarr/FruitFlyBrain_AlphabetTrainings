@@ -159,8 +159,8 @@ def test_learning_moves_accuracy_above_chance():
 def test_say_returns_a_fixed_length_string():
     cfg = Config(epochs=1, trials_per_class=1, n_kc=128, k_active=12)
     brain = FlyBrain(cfg)
-    out = brain.say("MY NAME IS JEFF", learn=False, verbose=False)
-    assert len(out) == len("MY NAME IS JEFF")
+    out = brain.say("PHILIPPE DELAMBRE", learn=False, verbose=False)
+    assert len(out) == len("PHILIPPE DELAMBRE")
 
 
 def test_checkpoint_round_trip(tmp_path):

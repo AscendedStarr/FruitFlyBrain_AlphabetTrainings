@@ -3,24 +3,32 @@
 Everything needed to reproduce the numbers in the README, and every place where
 a modelling choice was made rather than a measurement taken.
 
+Section 9 covers the one thing in this repository that is measured rather than
+modelled: the `PN → KC` matrix, when `wiring="connectome"`.
+
 ## 1. The circuit
 
 Five stages, all in `flybrain/circuit.py`. Sizes are in `flybrain/config.py`,
-each annotated with the in-vivo structure it stands in for.
+each annotated with the in-vivo structure it stands in for. The default
+configuration is listed first; the `wiring="connectome"` configuration, which
+changes only the `PN → KC` matrix and the three dimensions that follow from it,
+is shown after the slash.
 
 | Stage | Units | Substrate | Notes |
 | --- | --- | --- | --- |
-| Receptor sheet | 35 | `(5, 7)` binary bitmap | Not anatomy. A compound eye has ~3,000 ommatidia per eye; this is a stand-in for "some pixels". Poisson-encoded, rate 0.55 on ink / 0.04 on blank. |
-| Antennal lobe (PNs) | 128 | Graded logistic | ~150 uniglomerular PNs in vivo. Deliberately **not** LIF: a LIF's informative input range is ~0.15–0.45 for β=0.85, outside which it saturates to one spike per step and destroys the pattern. Common-mode subtraction (`pn_center`) removes the component every letter shares. |
-| Kenyon cells | 512 | Sparse top-k, k=60 | ~2,000 per hemisphere in vivo; in-vivo sparsity 5–10%, here ~12%. Each KC samples `fan_in=16` PNs (in vivo ~5–10), RMS-normalised, then Bernoulli-sampled. |
-| MBONs | 27 | Single-compartment LIF, β=0.90 | 26 letters + blank. Bias 0.12 puts the drive near `threshold·(1−β) = 0.1`, the graded operating point. |
-| Dopamine | — | Phasic burst, τ=3 steps, 1-step delay | Stands in for sugar GRN → SEZ → PAM/DAN → MB. `dopa_baseline_lr=0.01` makes the burst a reward-prediction error. |
+| Receptor sheet | 35 · 35 | `(5, 7)` binary bitmap | Not anatomy. A compound eye has ~3,000 ommatidia per eye; this is a stand-in for "some pixels". Poisson-encoded, rate 0.55 on ink / 0.04 on blank. |
+| Antennal lobe (PNs) | 128 · **157** | Graded logistic | 157 is the measured count of hemibrain PNs with traced output to a Kenyon cell (§9). Still **not** LIF: a LIF's informative input range is ~0.15–0.45 for β=0.85, outside which it saturates to one spike per step and destroys the pattern. Common-mode subtraction (`pn_center`) removes the component every letter shares. |
+| Kenyon cells | 512 · **1802** | Sparse top-k, k=60 · **k=211** | 1,802 is the measured count of KCs receiving PN input. k is set to hold sparsity at the connectome's 11.7% of the population. Normalised the same way in both configurations, then Bernoulli-sampled. |
+| MBONs | 27 · 27 | Single-compartment LIF, β=0.90 | 26 letters + blank. Bias 0.12 puts the drive near `threshold·(1−β) = 0.1`, the graded operating point. |
+| Dopamine | — | Phasic burst, τ=3 steps, 1-step delay | Stands in for sugar GRN → SEZ → PAM/DAN → MB. `dopa_baseline_lr=0.01` makes the burst a reward-prediction error. Unchanged by the connectome. |
 
-**Plasticity is confined to KC→MBON.** That is `n_kc × n_mbon = 512 × 27 =
-13,824` synapses. Every other weight is fixed at construction. A real mushroom
-body is far larger and its KC→MBON connectivity is sparse and stereotyped; this
-matrix is dense and random. That difference is the single largest gap between
-this model and the animal.
+**Plasticity is confined to KC→MBON.** That is `n_kc × n_mbon`, which is
+512 × 27 = **13,824** synapses in the default configuration and
+1,802 × 27 = **48,654** in the connectome configuration. Every other weight is
+fixed at construction. A real mushroom body's KC→MBON connectivity is sparse and
+stereotyped; here it is dense and random **in both configurations**. That
+difference is the single largest remaining gap between this model and the animal,
+and loading a connectome does not shrink it — see §9.4.
 
 ## 2. The learning rule
 
@@ -179,7 +187,17 @@ $env:OMP_NUM_THREADS=1
 .\.venv-flybrain\Scripts\python.exe read_document.py <your-book.pdf> --json runs/book_read.json
 .\.venv-flybrain\Scripts\python.exe -m pytest -q
 ```
+The connectome path needs two more commands, and they are independent of the
+block above — no checkpoint has to exist first:
 
+```powershell
+.\\.venv-flybrain\Scripts\python.exe tools/build_connectome.py   # ~46 MB public download -> data/hemibrain_mb.npz
+.\\.venv-flybrain\Scripts\python.exe connectome_compare.py --seeds 7,11,13 --epochs 400
+```
+
+`data/hemibrain_mb.npz` is committed, so the download is only needed to rebuild
+the extract from source. `--epochs` and `--seeds` are independent knobs;
+`--quick` forces 8 epochs for a plumbing check.
 Everything is seeded from `config.seed` and starts from a naive circuit, so two
 runs produce the **same weights**: retraining gives a weight digest of
 `626bece30a76927e8fd124eef1c3fdc3…` and `mbon.w` agreeing to 0.0 maximum
@@ -206,3 +224,141 @@ file hashes. A checkpoint hash therefore identifies a particular file on disk �
 which is exactly what the before/after guard needs it for, since it compares the
 *same path* across a read-only run — while a weight digest is what you compare to
 establish reproducibility across runs.
+
+## 9. The one measured layer
+
+The only material in this repository that was not chosen by its author is the
+`PN → KC` matrix in the `wiring="connectome"` configuration. This section is the
+whole account of where it comes from and what was done to it.
+
+### 9.1 Source
+
+| | |
+| --- | --- |
+| Dataset | **hemibrain v1.2** |
+| Citation | Scheffer et al. 2020, *eLife* **9**:e57443, doi:10.7554/eLife.57443 |
+| Licence | **CC BY 4.0** — permissive, no non-commercial restriction |
+| Access | `https://storage.googleapis.com/hemibrain/v1.2/exported-traced-adjacencies-v1.2.tar.gz`, no credentials |
+| Curated cell types | Schlegel et al. 2021, *eLife* **10**:e66018, doi:10.7554/eLife.66018 |
+
+FlyWire was considered and rejected on licence grounds: it is CC BY-**NC**, which
+is a poor fit for a repository published under MIT. Codex was rejected because it
+is token-gated. The hemibrain export is public, stable, and CC BY 4.0.
+
+### 9.2 The extraction, and the filter that had to be added
+
+The naive membership rule is a substring test on the cell type:
+
+| Class | Rule |
+| --- | --- |
+| `PN` | `"PN" in type` |
+| `KC` | `type.startswith("KC")` |
+| `MBON` | `type.startswith("MBON")` |
+| `DAN` | `type.startswith("PPL") or type.startswith("PAM")` |
+| `APL` | `type == "APL"` |
+
+Applied alone, that yields 428 PNs and 1,927 KCs — and **271 of those PNs have
+exactly zero synapses onto any Kenyon cell.** Three independent checks were run
+before that was believed, and only the third explains it:
+
+1. **Edge counts.** Those 271 neurons have 39–780 outgoing edges each (median
+   126) and exactly **zero** of them land on a KC. Not a join failure.
+2. **Nomenclature.** Their names are legitimate — `DA1_vPN`, `M_lvPNm24`,
+   `WEDPN8C`, `MZ_lvPN`, `DP1m_vPN`. A name-based rule cannot exclude them.
+3. **Curated tables.** Of 166 `mPN` (multiglomerular) neurons, **140 have no KC
+   output**; of 181 `uPN`, 118 do. The `mPN`s and the 91 `WEDPN*` wedge neurons
+   project to the **lateral horn**, not the mushroom body calyx. That is correct
+   *Drosophila* anatomy.
+
+**The resolution is the calyx filter, and it is the difference between using this
+dataset and misusing it:** membership is decided by **connectivity, not
+nomenclature**. A PN is kept iff it has at least one traced synapse onto a KC; a
+KC is kept iff at least one PN reaches it. Unmatched edges fall from 271 to
+**2**.
+
+| | Naive rule | Calyx filter |
+| --- | --- | --- |
+| PNs | 428 | **157** |
+| KCs | 1,927 | **1,802** |
+| PNs with no KC output | 271 | 0 (by construction) |
+| Unmatched edges | 271 | 2 |
+
+PN composition after filtering: 118 `uPN`, 26 `mPN`, 11 `biPN`, 2 absent from the
+curated table.
+
+### 9.3 Measured connectivity, and the three modelled transforms
+
+| Connection | Edges | Synapses |
+| --- | --- | --- |
+| PN → KC | 12,426 | 185,994 |
+| KC → MBON | 28,833 | 299,953 |
+| DAN → KC | 61,735 | 120,804 |
+
+KC fan-in after filtering: min 1, median 6, mean 6.90, max 21. Each MBON samples
+a median of 317 of the 1,802 KCs. `data/hemibrain_mb.npz` stores only the PN→KC,
+KC→MBON and DAN→KC edge lists plus neuron ids and types — 173.9 KB, against ~46 MB
+of raw CSVs and tarball, which are gitignored.
+
+The measurement ends at *which cells connect and how many synapses are between
+them*. Everything downstream of that is a modelling decision, and there are
+exactly three:
+
+| Transform | Why |
+| --- | --- |
+| Weight magnitude = **√(synapse count)**, not the count | A raw count lets one 400-synapse partner dominate four 4-synapse partners by two orders of magnitude. The square root compresses that range while preserving order. |
+| Each KC row **L2-normalised to unit norm** | Matches the scale of the random arm. Without it the connectome arm could win purely by being louder. |
+| All synapses **excitatory** | PN→KC is cholinergic, so the sign is right even though the export does not record it. |
+
+**All three are applied identically to the connectome and shuffled arms**, so they
+cannot manufacture a difference between them. They do mean that any "the real
+wiring is better" claim here is a claim about the *pattern* of the connectome, not
+about its conductances: the export records synapse counts, not synaptic strengths.
+
+### 9.4 The three arms
+
+`connectome_compare.py` holds the seed, the hyperparameters, the encoder and the
+learning rule fixed, and changes exactly one thing — the `PN → KC` matrix — across
+three arms. Dimensions are taken from the connectome, so all three arms run at
+157 PNs, 1,802 KCs, *k*=211 and 48,654 plastic synapses:
+
+| Arm | `PN → KC` | Purpose |
+| --- | --- | --- |
+| `connectome` | the measured wiring | — |
+| `connectome-shuffled` | each KC's partner set replaced by a uniformly random set **of the same size**, keeping that KC's exact degree and weight multiset | isolates partner **identity** while holding fan-in exactly fixed |
+| `random` | the synthetic generator at the connectome's dimensions, uniform fan-in | the synthetic baseline at matched scale |
+
+The shuffle is the experiment. It is a degree-matched permutation of the partner
+*identities* only, so a difference between `connectome` and `connectome-shuffled`
+is attributable to which specific partners the electron microscope detected, and
+nothing else. `wiring="random"` is deliberately **not** an accepted value of
+`pn_kc_weights()` — passing it raises `ValueError`, so the control cannot be
+accidentally conflated with the measured arm.
+
+Results, over three seeds at 400 epochs:
+
+| Arm | seed 7 | seed 11 | seed 13 | pooled |
+| --- | --- | --- | --- | --- |
+| `connectome` | 81/81 | 81/81 | 81/81 | **243/243** |
+| `connectome-shuffled` | 81/81 | 81/81 | 81/81 | **243/243** |
+| `random` | 77/81 | 74/81 | 81/81 | 232/243 |
+
+Paired `connectome` − `connectome-shuffled`: **+0 items on every seed.**
+
+**Conclusion, stated plainly:** at this task the specific detected partner
+identities contribute nothing measurable over equal-degree random partners. The
+`random` arm differs by ~4.5 points, but it differs along two axes at once, since
+the two connectome arms carry the real fan-in *distribution* (min 1, median 6,
+mean 6.90, max 21) while the `random` arm uses a uniform 6. Because the shuffle
+already rules out identity, the residual gap is attributable to the shape of the
+fan-in distribution and the 3.5× larger circuit — not to the connectome's
+specific partners.
+
+**Two limitations that must travel with that conclusion.** First, the task is too
+easy to discriminate the arms: 27 clean glyphs with an 81-item holdout means both
+connectome arms sit at the ceiling, and a 100.0% vs 100.0% tie demonstrates that
+the test cannot separate them rather than that they are equivalent. Second, the
+layer that actually learns — `KC → MBON`, 48,654 plastic synapses — is still
+invented, dense and random, so any genuine anatomical advantage would have to
+survive that bottleneck to become visible. Nothing here is evidence about
+*Drosophila*; it is a result about this model.
+

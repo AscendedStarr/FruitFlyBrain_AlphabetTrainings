@@ -71,7 +71,7 @@ print("  PASS - credited (normalised) update, brain intact" if ok else
       "  FAIL - weights collapsed, the unnormalised update is back")
 
 # And the phrase should still come out.
-said = post("/api/say", {"phrase": "MY NAME IS JEFF", "learn": False})
+said = post("/api/say", {"phrase": "PHILIPPE DELAMBRE", "learn": False})
 print(f"\nfly says: {said['said']!r}  {'correct' if said['correct'] else 'MISREAD'}")
 final = get("/api/state")["accuracy"]
 print(f"accuracy after saying         : {final:.1%}")

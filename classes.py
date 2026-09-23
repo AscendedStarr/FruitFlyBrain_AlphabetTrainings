@@ -2,8 +2,8 @@
 
 The earlier probe iterated "ABC..." - 26 letters - and missed that `CLASSES`
 has a 27th entry: the blank/space glyph. The model is perfect on A-Z but the
-blank is the one class it still fumbles, which is exactly what the phrase
-"MY NAME IS JEFF" exposes (its spaces came out as S and O).
+blank is the one class it still fumbles. That is what reading a whole phrase
+exposes: the spaces come out as letters.
 
 Run:  $env:OMP_NUM_THREADS=1; .\\.venv-flybrain\\Scripts\\python.exe classes.py
 """

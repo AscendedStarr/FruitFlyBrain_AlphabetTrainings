@@ -30,7 +30,7 @@ from flybrain.trainer import FlyBrain
 HERE = os.path.dirname(os.path.abspath(__file__))
 CKPT = os.path.join(HERE, "runs", "flybrain.pt")
 LOOKS = [1, 2, 3, 5, 9, 15, 25]
-PHRASE = "MY NAME IS JEFF"
+PHRASE = "PHILIPPE DELAMBRE"
 
 if not os.path.exists(CKPT):
     print(f"no checkpoint at {CKPT} - train one first (keep_training.py)")
@@ -42,7 +42,7 @@ print("=" * 66)
 print(f"checkpoint: {os.path.basename(CKPT)}")
 print(f"  epoch {brain.epoch}   best recorded {saved:.1%}")
 print("=" * 66)
-print(f"{'looks':>7} {'accuracy':>10} {'phrase (12 letters)':>21} {'sec':>7}")
+print(f"{'looks':>7} {'accuracy':>10} {'phrase (16 letters)':>21} {'sec':>7}")
 print("-" * 66)
 
 best = (0.0, 0)
@@ -63,13 +63,13 @@ for n in LOOKS:
 print("-" * 66)
 acc, n = best
 print(f"best: {n} looks -> {acc:.1%} per letter, "
-      f"'{PHRASE}' correct {acc ** 12:.1%} of the time")
+      f"'{PHRASE}' correct {acc ** 16:.1%} of the time")
 
 # What it would take to make the phrase reliable.
 print()
 print("phrase accuracy as a function of per-letter accuracy:")
 for p in (0.95, 0.97, 0.98, 0.99, 0.995, 0.999):
-    print(f"  {p:>6.1%} per letter -> phrase {p ** 12:>6.1%}")
+    print(f"  {p:>6.1%} per letter -> phrase {p ** 16:>6.1%}")
 
 # Which letters are still unstable, at the best look count.
 brain.cfg.decision_repeats = n

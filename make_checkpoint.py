@@ -100,7 +100,7 @@ def main() -> int:
     if reached:
         print(f"first within 2pt  : epoch {reached}"
               f"  ({curve[reached - 1]:.1%} at that point)")
-    print(f"phrase 'MY NAME IS JEFF' all 15 letters: {acc ** 15:.4%}")
+    print(f"phrase 'PHILIPPE DELAMBRE' all 17 characters: {acc ** 17:.4%}")
 
     brain.save(args.out, note=f"{acc:.1%} after {args.epochs} epochs (pavlovian)")
     print(f"saved -> {args.out}")

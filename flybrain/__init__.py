@@ -1,11 +1,14 @@
 """A fly mushroom body trained by dopamine-modulated Hebbian plasticity.
 
-This is a brain-*inspired* spiking classifier, not an emulation of the FlyWire
-connectome. See the README for exactly which parts are measured fly anatomy and
-which parts are modelling choices.
+This is a brain-*inspired* spiking classifier, not an emulation of a fly brain.
+As of v0.2.0 the fixed ``PN -> KC`` expansion can be taken from the measured
+hemibrain connectome instead of a random number generator (``Config.wiring``),
+which makes the wiring real while leaving the task invented. See the README for
+exactly which parts are measured fly anatomy and which are modelling choices.
 """
 
 from .config import Config
+from .connectome import Connectome, pn_kc_weights
 from .dopamine import Burst, DopamineSystem
 from .encoding import (
     CLASSES,
@@ -22,10 +25,12 @@ from .encoding import (
 from .circuit import AntennalLobe, KenyonCells, MushroomBody, MushroomBodyOutput
 from .trainer import EpochStats, FlyBrain, TrialResult
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 __all__ = [
     "Config",
+    "Connectome",
+    "pn_kc_weights",
     "Burst",
     "DopamineSystem",
     "CLASSES",

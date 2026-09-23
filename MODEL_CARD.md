@@ -11,19 +11,31 @@ mushroom body, trained by a three-factor reward-modulated Hebbian rule. It reads
 individual characters from a 35-pixel bitmap and answers with one of **27**
 symbols: `A`–`Z` and a blank.
 
+The default configuration is entirely synthetic. As of v0.2.0 the fixed
+`PN → KC` expansion can instead be loaded from the measured **hemibrain v1.2**
+connectome — 157 projection neurons, 1,802 Kenyon cells, 185,994 traced synapses
+— which makes exactly one layer of the network anatomical and leaves every other
+layer invented. See [The connectome arm](#the-connectome-arm).
+
 ## What it is not
 
-- **Not a connectome.** No FlyWire, hemibrain, neuPrint, or any other
-  electron-microscopy reconstruction is loaded, downloaded, or referenced at
-  runtime. Nothing here is an emulation of a specific animal's wiring diagram.
-  The layer sizes are *inspired by* published cell counts; the connectivity is
-  random and dense where a real mushroom body is sparse and stereotyped.
+- **Not a simulation of a fly.** As of v0.2.0 the `PN -> KC` wiring can be loaded
+  from the measured **hemibrain v1.2** connectome, so one layer of this network is
+  no longer invented. Everything else still is. A connectome replaces the
+  *wiring*, not the *task*: the 5x7 glyph encoding, the 27 output labels, the
+  mapping of 68 real MBONs onto 27 letters, the learning rule, the dopamine model
+  and the Poisson spiking are all choices this project made. No fly reads
+  letters, and this network is not evidence about what a fly brain does. See
+  [The connectome arm](#the-connectome-arm) for exactly which parts are measured
+  and which are modelled. The default `wiring="random"` path is unchanged from
+  v0.1.0 and loads no connectome at all.
 - **Not an OCR system.** It reads one character at a time from a rendered
   bitmap. It has no word model, no language model, no layout analysis, and no
   ability to segment a page. It has never seen a photograph of text.
 - **Not evidence about biology.** A fruit fly does not read. Nothing here should
   be cited as a claim about what an insect brain does. It is a toy that borrows
-  anatomical vocabulary to make the architecture concrete.
+  anatomical vocabulary to make the architecture concrete — and now, in one
+  layer, the actual anatomy.
 
 ## Intended use
 
@@ -55,15 +67,37 @@ symbols: `A`–`Z` and a blank.
 | Chance | 3.7% | 1 of 27 classes |
 | Clean-glyph holdout | 100.0% | `epochs=400`, 4 looks/answer |
 | `evaluate()` holdout | 98.8–100% | varies with where in the session it is called; the receptor sheet is Poisson-sampled from a running generator, so repeated evaluations are independent draws |
-| Digits recognised | **0/300** | 30 sweeps × 10 digits, epoch 400, 4 looks |
+| Algorithms recognised | 0/300 | 30 sweeps × 10 digits, epoch 400, 4 looks |
 | Answers inside vocabulary | 300/300 | every digit answered with a letter |
 | Alphabet control, same run | 810/810 | 27 clean glyphs × 30 sweeps, 4 looks |
-| Plastic synapses | 13,824 | KC→MBON only: 512 × 27 |
-| Train to 100% | 102.5 s | 400 epochs, CPU, `OMP_NUM_THREADS=1`; first within 2 points at epoch 59 |
+| Plastic synapses | 13,824 | `wiring="random"` (the default): KC→MBON only, 512 × 27 |
+| Plastic synapses | 48,654 | `wiring="connectome"`: KC→MBON only, 1802 × 27 |
+| Train to 100% | 102.5 s | 400 epochs, CPU, `OMP_NUM_THREADS=1`; first within 2 points at epoch 59 (default config) |
 
 The two figures that matter together: **0/300 on digits** and **300/300 answers
 inside the vocabulary**. The fly is never right about a digit and never invents
 a symbol outside its 27 cells.
+
+### The connectome arm
+
+`wiring="connectome"` swaps the `PN → KC` matrix for the measured hemibrain v1.2
+anatomy (157 PNs, 1,802 KCs, 185,994 traced PN→KC synapses) and trains the same
+task with the same hyperparameters. `connectome_compare.py` runs it against two
+controls — a degree-matched shuffle that keeps every KC's exact partner *count*
+but randomises *which* PNs, and the v0.1.0 random-expansion path at the
+connectome's dimensions with the connectome's median fan-in.
+
+See `runs/connectome_compare.json` for the raw numbers and the README's
+[The connectome arm](#the-connectome-arm) section for what they do and do not
+show. The short version, stated without hedging: the measured wiring reaches the
+same accuracy as the published random wiring, and the partner-identity shuffle
+matches it exactly — so at this task, on this model, the specific detected
+partner identities add nothing measurable over equal-degree random partners. What
+the connectome changes is **scale and fan-in distribution**, not behaviour.
+
+**Read that as a negative result about this model, not about the fly.** The only
+measured layer is `PN → KC`. `KC → MBON` — the plastic layer, the one that
+actually learns — is still random, dense, and the largest gap in the model.
 
 ### Reading a real document
 
@@ -117,3 +151,14 @@ is reliable.
    server process writing over the checkpoint. See the README's post-mortem.
    The mitigation is a downgrade guard in `FlyBrain.save()` and a port check in
    `serve.main()`.
+7. **The connectome arm is one layer, and its result is a null.** `PN → KC` is
+   measured; `KC → MBON`, the learning rule, the dopamine model and the encoding
+   are not. The measured wiring reaches 100.0% on an 81-glyph holdout, but so
+   does a degree-matched shuffle, on all three seeds — so the specific detected
+   partner identities add nothing measurable at this task. Do **not** cite this as
+   evidence that connectomes do or don't matter, or as a claim about *Drosophila*.
+   The task is at ceiling and the plastic layer is still invented; both caveats
+   are in the README's [The connectome arm](#the-connectome-arm) section.
+8. **The connectome arm is slower and larger.** 1,802 KCs and 48,654 plastic
+   synapses — 3.5× the default — for ~287 s per training run against 102.5 s. It
+   buys no measured accuracy at this task.

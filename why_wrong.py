@@ -28,7 +28,7 @@ from flybrain import CLASSES, Config
 from flybrain.trainer import FlyBrain
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-PHRASE = "MY NAME IS JEFF"
+PHRASE = "PHILIPPE DELAMBRE"
 
 print("=" * 68)
 print("1. what is on disk, and what does it actually score?")

@@ -5,18 +5,27 @@ Three stages, matching the fly's olfactory associative-learning pathway:
     receptor sheet  ->  antennal lobe (PNs)  ->  Kenyon cells  ->  MBONs
 
 Only the **KC -> MBON** synapse is plastic. That is the biologically correct
-place for the memory: PN -> KC wiring is largely genetically determined and
-random, it is not where reward-modulated learning is observed. Reward reaches
-the memory through the dopaminergic neurons modelled in ``dopamine.py``.
+place for the memory: PN -> KC wiring is genetically determined and not where
+reward-modulated learning is observed, so it is held fixed. Reward reaches the
+memory through the dopaminergic neurons modelled in ``dopamine.py``.
+
+Because the PN -> KC matrix is fixed rather than learned, it is also the one
+layer that can be taken from a real connectome instead of drawn from a random
+number generator - which is what ``cfg.wiring`` selects. It changes the wiring,
+not the task: the 5x7 glyph encoding, the 27 output labels, and the decision to
+read 27 letters out of an MBON population that the fly does not label with
+letters remain inventions of this project.
 
 What each stage is for
 ----------------------
 * **Antennal lobe** - a fixed, non-plastic decorrelating expansion with a wide
   dynamic range, so the graded pattern survives.
 * **Calyx / Kenyon cells** - a sparse, high-dimensional combinatorial code. Each
-  KC samples only ``fan_in`` of the PNs, and the single giant GABAergic APL
+  KC samples only a handful of the PNs, and the single giant GABAergic APL
   neuron shifts the population so only the top ``k`` units are active. This is
-  the expansion that makes a linear readout separable.
+  the expansion that makes a linear readout separable. In the fly the sampling
+  is fixed by development; here it is either a seeded random draw or the
+  measured connectome, depending on ``cfg.wiring``.
 * **MBON layer** - the readout, with lateral inhibition, and the only plastic
   synapses in the circuit.
 
@@ -100,16 +109,39 @@ class AntennalLobe:
 
 
 class KenyonCells:
-    """PNs -> Kenyon cells. A sparse, high-dimensional, graded expansion."""
+    """PNs -> Kenyon cells. A sparse, high-dimensional, graded expansion.
+
+    The expansion matrix is fixed and not learned, because in the fly it is
+    genetically determined: a Kenyon cell does not learn which odour channels to
+    listen to. ``cfg.wiring`` decides where that fixed matrix comes from - a
+    seeded random draw (what v0.1.0 ships) or the measured hemibrain connectome.
+    See :mod:`flybrain.connectome` for what is measured and what is a modelling
+    choice.
+    """
 
     def __init__(self, cfg: Config) -> None:
-        gen = torch.Generator().manual_seed(cfg.seed + 23)
-        self.w = torch.zeros(cfg.n_kc, cfg.n_pn)
-        fan_in = max(1, min(cfg.fan_in, cfg.n_pn))
-        scale = 1.0 / fan_in**0.5
-        for kc in range(cfg.n_kc):
-            idx = torch.randperm(cfg.n_pn, generator=gen)[:fan_in]
-            self.w[kc, idx] = torch.randn(fan_in, generator=gen) * scale
+        if cfg.wiring == "random":
+            gen = torch.Generator().manual_seed(cfg.seed + 23)
+            self.w = torch.zeros(cfg.n_kc, cfg.n_pn)
+            fan_in = max(1, min(cfg.fan_in, cfg.n_pn))
+            scale = 1.0 / fan_in**0.5
+            for kc in range(cfg.n_kc):
+                idx = torch.randperm(cfg.n_pn, generator=gen)[:fan_in]
+                self.w[kc, idx] = torch.randn(fan_in, generator=gen) * scale
+        elif cfg.wiring in ("connectome", "connectome-shuffled"):
+            from .connectome import load, pn_kc_weights
+            conn = load(cfg.connectome_path or None)
+            self.w = pn_kc_weights(conn, variant=cfg.wiring, seed=cfg.seed)
+            if self.w.shape != (cfg.n_kc, cfg.n_pn):
+                raise ValueError(
+                    "connectome wiring is %s but the config asks for "
+                    "n_kc=%d, n_pn=%d - use "
+                    "Connectome.as_config_overrides() to size the circuit from "
+                    "the connectome" % (tuple(self.w.shape), cfg.n_kc, cfg.n_pn))
+        else:
+            raise ValueError("unknown cfg.wiring %r, expected one of %s"
+                             % (cfg.wiring, ("random", "connectome",
+                                             "connectome-shuffled")))
 
         self.cfg = cfg
         self.reset()

@@ -103,6 +103,6 @@ log(f"  {LONG} epochs in {time.time() - t0:.0f}s -> holdout {acc:.1%}, "
 out = os.path.join(HERE, "runs", "flybrain.pt")
 brain.save(out, note=f"{acc:.1%} after {LONG} epochs ({name.strip()})")
 log(f"  saved -> {out}")
-log(f"  phrase 'MY NAME IS JEFF' reads correctly {acc ** 12:.4%} of the time")
+log(f"  phrase 'PHILIPPE DELAMBRE' reads correctly {acc ** 16:.4%} of the time")
 log("")
 log("restart serve.py to serve this checkpoint")
