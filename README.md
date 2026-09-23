@@ -23,7 +23,7 @@ this on faith.
 ---
 
 <img width="1917" height="640" alt="Screenshot 2026-09-23 185424" src="https://github.com/user-attachments/assets/66560b3e-d994-4981-8f46-2f8b6dd4f433" />
-
+<url:https://youtu.be/ISDJARjHhgs>
 
 ## The part that actually works
 
