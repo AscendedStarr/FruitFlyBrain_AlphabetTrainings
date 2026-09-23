@@ -25,10 +25,16 @@ import os
 import sys
 import time
 
+# Repo root on sys.path, so this script still finds the package from scripts/.
+import os as _os
+import sys as _sys
+
+_sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+
 from flybrain.trainer import FlyBrain
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-CKPT = os.path.join(HERE, "runs", "flybrain.pt")
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+CKPT = os.path.join(ROOT, "runs", "flybrain.pt")
 LOOKS = [1, 2, 3, 5, 9, 15, 25]
 PHRASE = "PHILIPPE DELAMBRE"
 

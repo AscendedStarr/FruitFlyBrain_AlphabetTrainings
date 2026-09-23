@@ -130,8 +130,9 @@ forward-only test: `read_out()` calls `MushroomBody.present()`, which computes
 the PN/KC/MBON response and stages an eligibility trace, and **never** calls
 `apply_dopamine()`. No `trial()`, no `learn=True`, no `brain.save()`.
 
-Since a digit can never be contained in `CLASSES` — `classes.py` asserts every
-answer is a member — the negative control is structural rather than empirical.
+Since a digit can never be contained in `CLASSES` — `scripts/classes.py` asserts
+every answer is a member — the negative control is structural rather than
+empirical.
 The script additionally hashes every weight matrix and the checkpoint file
 before and after all 300 presentations and asserts both are unchanged.
 

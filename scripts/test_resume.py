@@ -16,10 +16,17 @@ import os
 
 import torch
 
+# Repo root on sys.path, so this script still finds the package from scripts/.
+import os as _os
+import sys as _sys
+
+_sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+
 from flybrain import Config
 from flybrain.trainer import FlyBrain
 
-CKPT = "runs/_resume_test.pt"
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+CKPT = os.path.join(ROOT, "runs", "_resume_test.pt")
 EPOCHS_A = 40
 EPOCHS_B = 40
 

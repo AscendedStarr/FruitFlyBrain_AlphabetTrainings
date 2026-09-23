@@ -25,6 +25,12 @@ from __future__ import annotations
 import copy
 import torch
 
+# Repo root on sys.path, so this script still finds the package from scripts/.
+import os as _os
+import sys as _sys
+
+_sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+
 from flybrain import Config
 from flybrain.trainer import FlyBrain
 

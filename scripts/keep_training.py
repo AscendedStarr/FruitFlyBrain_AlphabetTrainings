@@ -23,10 +23,16 @@ import os
 import time
 from dataclasses import replace
 
+# Repo root on sys.path, so this script still finds the package from scripts/.
+import os as _os
+import sys as _sys
+
+_sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+
 from flybrain import Config
 from flybrain.trainer import FlyBrain
 
-HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 EPOCHS = 200
 
 RUNS = [
@@ -44,7 +50,7 @@ RUNS = [
 
 base = Config(lr=0.020, credit_mode="pattern", lr_schedule="const", epochs=EPOCHS)
 
-log_path = os.path.join(HERE, "runs", "sweep.log")
+log_path = os.path.join(ROOT, "runs", "sweep.log")
 os.makedirs(os.path.dirname(log_path), exist_ok=True)
 
 
@@ -100,7 +106,7 @@ tail = curve[-100:]
 log(f"  {LONG} epochs in {time.time() - t0:.0f}s -> holdout {acc:.1%}, "
     f"trailing-100 {sum(tail) / len(tail):.1%}, best {max(curve):.1%}")
 
-out = os.path.join(HERE, "runs", "flybrain.pt")
+out = os.path.join(ROOT, "runs", "flybrain.pt")
 brain.save(out, note=f"{acc:.1%} after {LONG} epochs ({name.strip()})")
 log(f"  saved -> {out}")
 log(f"  phrase 'PHILIPPE DELAMBRE' reads correctly {acc ** 16:.4%} of the time")

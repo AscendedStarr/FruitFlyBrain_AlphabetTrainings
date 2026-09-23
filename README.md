@@ -610,6 +610,7 @@ Run the tests with `pytest`.
 | `make_checkpoint.OLD-60pct.py` | The superseded recipe, kept because it reproduces the 60.5% plateau. |
 | `digit_proof.py` | The negative control. |
 | `read_document.py` | Headless document reader, with the same hash guard. |
+| `scripts/` | The hunt and diagnostic scripts — the measurements the claims rest on. Nothing imports them; each one runs standalone. See `scripts/README.md`. |
 | `flybrain/proof.py` | Weight/checkpoint hashing used by both of the above. |
 | `docs/methods.md` | Full methods, every modelling choice flagged as a choice. |
 | `docs/research-report.md` | The long version: the negative control as the central result, plus threats to validity. |
@@ -625,19 +626,25 @@ Run the tests with `pytest`.
 ### The scripts from the hunt
 
 Kept because they are the measurements the claims rest on, and because most of
-them are written to answer one question and then stop. All of them run against
-`runs/flybrain.pt` and none of them train.
+them are written to answer one question and then stop. They live in `scripts/`
+so the repository root stays readable — run one as
+`.\\.venv-flybrain\\Scripts\\python.exe scripts\\looks.py`. Each of them puts the
+repository root on its own `sys.path`, so the working directory you run from
+does not matter. Seven of these load `runs/flybrain.pt` and never train;
+`scripts/keep_training.py` is the long run that wrote it, so running that one
+retrains and **overwrites the checkpoint**. `fly_brain.py` is a documented entry
+point, so it stays in the root.
 
 | Script | The question it was written to answer |
 | --- | --- |
-| `looks.py` | How many looks before answering? Saturated at 65.4% against the *old* weights — which is what proved the 60.5% ceiling was the weights and not sampling noise. |
-| `blank.py` | How reliable is the blank glyph, really? 200 questions per look count, because 10 samples cannot tell 100% from 92%. |
-| `classes.py` | All 27 classes, not 26. This is the script that noticed the blank is a class, and that reading a whole phrase is what exposes it. |
-| `confusions.py` | Are the errors random or structural? They cluster on glyphs that look alike in a 5×7 grid. |
-| `repeat_readout.py` | Accuracy against number of presentations of the same glyph — the readout-side fix, nothing retrained. |
-| `why_mn.py` | Why do `M` and `N` fail while `O` and `Q` are nearly right? Lit pixels, KC sparsity, and a 35-pixel budget. |
-| `why_wrong.py` | Phrase arithmetic: per-letter accuracy raised to 16 letters, and what that costs. |
-| `keep_training.py` | The sweep over `trials_per_class`, `decision_repeats` and `n_kc` that ran while the recipe was stuck. |
+| `scripts/looks.py` | How many looks before answering? Saturated at 65.4% against the *old* weights — which is what proved the 60.5% ceiling was the weights and not sampling noise. |
+| `scripts/blank.py` | How reliable is the blank glyph, really? 200 questions per look count, because 10 samples cannot tell 100% from 92%. |
+| `scripts/classes.py` | All 27 classes, not 26. This is the script that noticed the blank is a class, and that reading a whole phrase is what exposes it. |
+| `scripts/confusions.py` | Are the errors random or structural? They cluster on glyphs that look alike in a 5×7 grid. |
+| `scripts/repeat_readout.py` | Accuracy against number of presentations of the same glyph — the readout-side fix, nothing retrained. |
+| `scripts/why_mn.py` | Why do `M` and `N` fail while `O` and `Q` are nearly right? Lit pixels, KC sparsity, and a 35-pixel budget. |
+| `scripts/why_wrong.py` | Phrase arithmetic: per-letter accuracy raised to 16 letters, and what that costs. |
+| `scripts/keep_training.py` | The sweep over `trials_per_class`, `decision_repeats` and `n_kc` that ran while the recipe was stuck. |
 | `fly_brain.py` | The command-line driver: `demo`, `train`, `say`, `diag`. |
 
 ---

@@ -17,11 +17,17 @@ from __future__ import annotations
 
 import os
 
+# Repo root on sys.path, so this script still finds the package from scripts/.
+import os as _os
+import sys as _sys
+
+_sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+
 from flybrain import CLASSES
 from flybrain.trainer import FlyBrain
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-brain = FlyBrain.load(os.path.join(HERE, "runs", "flybrain.pt"))
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+brain = FlyBrain.load(os.path.join(ROOT, "runs", "flybrain.pt"))
 N = 200  # questions per look count
 
 print("=" * 70)

@@ -15,11 +15,17 @@ import os
 
 import torch
 
+# Repo root on sys.path, so this script still finds the package from scripts/.
+import os as _os
+import sys as _sys
+
+_sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+
 from flybrain import CLASSES
 from flybrain.trainer import FlyBrain
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-brain = FlyBrain.load(os.path.join(HERE, "runs", "flybrain.pt"))
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+brain = FlyBrain.load(os.path.join(ROOT, "runs", "flybrain.pt"))
 letters = [c for c in CLASSES if c != " "]
 print(f"epoch {brain.epoch}, one-shot holdout {brain.evaluate():.1%}\n")
 print(f"{'looks':>6} {'accuracy':>9}   phrase 'PHILIPPE DELAMBRE'")

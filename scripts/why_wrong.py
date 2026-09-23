@@ -24,17 +24,23 @@ from __future__ import annotations
 import glob
 import os
 
+# Repo root on sys.path, so this script still finds the package from scripts/.
+import os as _os
+import sys as _sys
+
+_sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+
 from flybrain import CLASSES, Config
 from flybrain.trainer import FlyBrain
 
-HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PHRASE = "PHILIPPE DELAMBRE"
 
 print("=" * 68)
 print("1. what is on disk, and what does it actually score?")
 print("=" * 68)
 print(f"{'checkpoint':<26} {'format':>6} {'epoch':>6} {'saved':>7} {'fresh':>7}")
-for path in sorted(glob.glob(os.path.join(HERE, "runs", "*.pt"))):
+for path in sorted(glob.glob(os.path.join(ROOT, "runs", "*.pt"))):
     try:
         brain = FlyBrain.load(path)
     except Exception as exc:                       # noqa: BLE001

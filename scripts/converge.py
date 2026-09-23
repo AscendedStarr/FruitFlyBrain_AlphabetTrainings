@@ -10,6 +10,13 @@ from __future__ import annotations
 import copy
 import time
 
+# Repo root on sys.path, so this script still finds the package from scripts/.
+import os
+import sys
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, ROOT)
+
 from flybrain import Config
 from flybrain.trainer import FlyBrain
 
@@ -43,7 +50,7 @@ def main() -> None:
               f"last-50 {tail:6.1%}   x{tail / chance:.1f} chance")
         print("             " + " ".join(f"{v:>4.0%}" for v in hist[::50]) + "\n")
 
-        brain.save(f"runs/alphabet_{lr}.pt")
+        brain.save(os.path.join(ROOT, "runs", f"alphabet_{lr}.pt"))
 
 
 if __name__ == "__main__":

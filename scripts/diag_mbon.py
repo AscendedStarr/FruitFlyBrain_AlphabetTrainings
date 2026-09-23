@@ -16,6 +16,12 @@ import argparse
 
 import torch
 
+# Repo root on sys.path, so this script still finds the package from scripts/.
+import os as _os
+import sys as _sys
+
+_sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+
 from flybrain import CLASSES, Config, FlyBrain, encode_from_config
 from flybrain.encoding import FONT_5X7
 

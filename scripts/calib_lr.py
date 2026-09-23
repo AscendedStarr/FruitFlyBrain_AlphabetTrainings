@@ -13,6 +13,12 @@ import time
 
 import torch
 
+# Repo root on sys.path, so this script still finds the package from scripts/.
+import os as _os
+import sys as _sys
+
+_sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+
 from flybrain import CLASSES, Config, FlyBrain
 
 LRS = [0.001, 0.002, 0.005, 0.01, 0.02, 0.05]

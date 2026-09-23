@@ -58,7 +58,7 @@ MIME = {".html": "text/html", ".js": "text/javascript",
 # Four is the number that matters. `CLASSES` has 27 entries: A-Z *plus* the
 # blank glyph, and the blank lights 0 of the 35 receptors - an empty sheet, so
 # nothing but noise and the prior can separate it from any other near-empty
-# input. Measured against the trained checkpoint (see classes.py):
+# input. Measured against the trained checkpoint (see scripts/classes.py):
 #
 #     1 look   26/27 classes perfect, blank 5/10  (a phrase's spaces come out as letters)
 #     2 looks  26/27 classes perfect, blank 9/10
