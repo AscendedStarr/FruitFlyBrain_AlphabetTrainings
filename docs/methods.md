@@ -306,13 +306,16 @@ exactly three:
 | Transform | Why |
 | --- | --- |
 | Weight magnitude = **√(synapse count)**, not the count | A raw count lets one 400-synapse partner dominate four 4-synapse partners by two orders of magnitude. The square root compresses that range while preserving order. |
-| Each KC row **L2-normalised to unit norm** | Matches the scale of the random arm. Without it the connectome arm could win purely by being louder. |
+| Each KC row **L2-normalised to unit norm** | Puts every KC at the same input magnitude, so the connectome arm cannot win purely by being louder. Exact for both connectome arms. The random arm is only *nominally* at this scale — it draws weights with variance 1/`fan_in`, so its rows average 0.96 over a spread of 0.20–2.15 (median 0.94, sd 0.28 at `fan_in`=6). |
 | All synapses **excitatory** | PN→KC is cholinergic, so the sign is right even though the export does not record it. |
 
 **All three are applied identically to the connectome and shuffled arms**, so they
-cannot manufacture a difference between them. They do mean that any "the real
-wiring is better" claim here is a claim about the *pattern* of the connectome, not
-about its conductances: the export records synapse counts, not synaptic strengths.
+cannot manufacture a difference between them. The random arm shares the √
+weighting and the excitatory sign but is only nominally row-normalised, which is
+why the shuffled arm — not the random one — carries the weight of the comparison.
+They do mean that any "the real wiring is better" claim here is a claim about the
+*pattern* of the connectome, not about its conductances: the export records
+synapse counts, not synaptic strengths.
 
 ### 9.4 The three arms
 

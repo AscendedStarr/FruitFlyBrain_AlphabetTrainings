@@ -238,7 +238,7 @@ neuron, and how many synapses are between them.
 | **KC fan-in** | **Measured** | min 1, median 6, mean 6.90, max 21. Held exactly fixed in the shuffled control. |
 | **KC population size** | **Measured** | 1,802 KCs that actually receive PN input. |
 | Synapse magnitude | Modelled | √(synapse count), not the raw count — so one 400-synapse partner doesn't silence four 4-synapse partners. |
-| Row normalisation | Modelled | Each KC row scaled to unit L2 norm, the same scale the random arm uses, so loudness is not a confound. |
+| Row normalisation | Modelled | Each KC row scaled to unit L2 norm, so loudness is not a confound. **Exact for both connectome arms; only nominal for the random arm**, which draws weights with variance 1/`fan_in` and so averages 0.96 with a spread of 0.20–2.15. |
 | Synapse sign | Modelled | All excitatory. PN→KC is cholinergic, so this one is at least right. |
 | Receptor sheet | Invented | 35 pixels. A compound eye has ~3,000 ommatidia per eye. |
 | Projection neurons | Invented | 157 modelled units running a graded logistic, not 157 real identified neurons. Deliberately **not** LIF — a LIF saturates outside a narrow input band and destroys the pattern at stage one. |
@@ -249,11 +249,15 @@ neuron, and how many synapses are between them.
 | The task | **Invented** | The fly does not read. It has no letters, no alphabet and no blank class. |
 
 Three of those modelled choices — √ weighting, unit row norm, all-excitatory —
-are applied **identically to every arm of the comparison**, so they cannot
-manufacture a difference between arms. What they do mean is that any claim of
-the form "the real wiring is better" is a claim about the *pattern* of the
-connectome, not about its conductance. The export records synapse counts; it
-does not record how strong any of them are.
+are applied the same way across arms, so they cannot manufacture the difference
+that actually matters: the one between the **connectome** and **shuffled** arms,
+which share all three exactly. There is one asymmetry, disclosed here rather
+than smoothed over: the row norm is exact for the connectome arms and only
+nominal for the random arm, whose rows scatter from 0.20 to 2.15 (see the table
+above). What those choices do mean is that any claim of the form "the real
+wiring is better" is a claim about the *pattern* of the connectome, not about
+its conductance. The export records synapse counts; it does not record how
+strong any of them are.
 
 ### The filter that turned out to matter
 

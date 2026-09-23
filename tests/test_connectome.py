@@ -274,6 +274,35 @@ def test_random_arm_still_works_after_the_refactor():
     assert not torch.allclose(norm, torch.ones_like(norm), atol=1e-3)
 
 
+def test_row_scale_asymmetry_is_the_one_the_docs_describe():
+    """Pin the single modelling choice the arms do *not* share exactly.
+
+    The docstring of ``flybrain.connectome`` and the README both state that the
+    two connectome arms are *exactly* unit L2 per row while the random arm is
+    only *nominally* at that scale: it draws ``fan_in`` weights from
+    N(0, 1/fan_in), which pins the expected squared row norm at 1 but leaves
+    realised rows free to scatter. Both halves of that published claim are
+    asserted here, at the dimensions the comparison actually uses, so the prose
+    and the code cannot drift apart again without a test going red.
+    """
+    conn = load()
+    overrides = conn.as_config_overrides()
+    fan_in = max(1, min(int(round(float(np.median(conn.fan_in)))), conn.n_pn))
+
+    # 1. The connectome arms really are exactly unit norm, row by row.
+    for variant in ("connectome", "connectome-shuffled"):
+        w = pn_kc_weights(conn, variant=variant, seed=0)
+        assert torch.allclose(w.norm(dim=1), torch.ones(conn.n_kc), atol=1e-5)
+
+    # 2. The random arm is only nominally at that scale: its expected squared
+    #    row norm is 1, but individual rows scatter well away from it.
+    cfg = Config(wiring="random", fan_in=fan_in, seed=0, **overrides)
+    norm = KenyonCells(cfg).w.norm(dim=1)
+    assert abs(float((norm ** 2).mean()) - 1.0) < 0.05
+    assert float(norm.std()) > 0.1
+    assert not bool(torch.allclose(norm, torch.ones_like(norm), atol=1e-3))
+
+
 def test_unknown_wiring_is_rejected_loudly():
     cfg = Config(wiring="something-else")
     with pytest.raises(ValueError):

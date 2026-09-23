@@ -35,16 +35,29 @@ the model. The choices are:
     magnitude  proportional to sqrt(synapse count), rather than to the raw
                count, so a Kenyon cell with one 400-synapse partner and one
                4-synapse partner does not end up listening to only the first
-    row norm   each KC's weight row is rescaled to unit L2 norm, which is the
-               scale the randomly-wired arm already uses - so the two share an
-               operating point and any difference between them is attributable
-               to *which* PNs each KC hears and not to how loud the input is
+    row norm   each KC's weight row is rescaled to unit L2 norm, so no KC is
+               accidentally louder than another and any difference between two
+               connectome-wired arms is attributable to *which* PNs each KC
+               hears and not to how loud the input is. This is exact for the
+               two connectome arms only. The randomly-wired arm is drawn, not
+               normalised: it samples each of a KC's ``fan_in`` weights from
+               N(0, 1/fan_in), which pins a row's *expected* squared norm to 1
+               (measured 0.9957 pooled over four seeds) while leaving any
+               individual row free to scatter. At the fan-in 6 the comparison
+               uses, its realised norms run 0.20 to 2.15 around a median of
+               0.94, sd 0.28. The arms therefore share a nominal scale, not an
+               exact per-row one, and that residual difference is stated here
+               rather than normalised away
     sign       excitation, as PN -> KC is cholinergic and excitatory in the fly
 
-Those three choices are made once, documented here, and applied identically to
-every arm of the comparison, so they cannot manufacture a difference between
-arms. What they do mean is that a result of the form "the real wiring is better"
-is a claim about the *pattern* of the connectome, not about its conductance.
+Those three choices are made once and documented here. The sqrt weighting and
+the excitatory sign are applied identically to every arm of the comparison; the
+row normalisation is exact for the two connectome arms and nominal only for the
+random one, as set out above. None of them can manufacture the difference that
+matters - the one between the connectome and shuffled arms, which share all
+three. What they do mean is that a result of the form "the real wiring is
+better" is a claim about the *pattern* of the connectome, not about its
+conductance.
 
 Variants
 --------

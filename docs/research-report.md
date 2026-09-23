@@ -86,11 +86,15 @@ Two design choices are worth naming because they were arrived at by being wrong:
 - **The KC code is RMS-normalised, not peak-normalised.** Peak normalisation
   throws away total activity, and total activity is the only signal that
   distinguishes the blank glyph from a dim letter.
-- **A measured `PN → KC` matrix is re-scaled to the same L2 row norm as the
-  random one.** This was a deliberate control, not a convenience: the connectome
-  arm must not win because its rows happen to be louder. Three modelled choices —
-  √ synapse weighting, unit row norm, all-excitatory sign — are applied
-  identically to every arm, so they cannot manufacture an inter-arm difference.
+- **A measured `PN → KC` matrix is re-scaled to unit L2 row norm.** This was a
+  deliberate control, not a convenience: the connectome arm must not win because
+  its rows happen to be louder. Two of the three modelled choices — √ synapse
+  weighting and all-excitatory sign — are applied identically to every arm. The
+  third, the row norm, is exact for both connectome arms and only *nominal* for
+  the random arm, which draws weights with variance 1/`fan_in`: its rows average
+  0.96 with a spread of 0.20–2.15. That asymmetry is disclosed rather than
+  smoothed over, and it does not touch the comparison that carries the result,
+  since the connectome and shuffled arms share all three choices exactly.
 
 Three-factor reward-modulated STDP on KC→MBON:
 
@@ -428,7 +432,7 @@ generator. What that changes, and what it does not, is the whole point:
 | KC fan-in | **Measured** | min 1, median 6, mean 6.90, max 21 |
 | KC population | **Measured** | 1,802 KCs receiving PN input |
 | Synapse magnitude | Modelled | √(synapse count), applied identically to every arm |
-| Row scale | Modelled | unit L2 norm per KC, applied identically to every arm |
+| Row scale | Modelled | unit L2 norm per KC — exact for both connectome arms, nominal only for the random arm (rows average 0.96, spread 0.20–2.15) |
 | Synapse sign | Modelled | all excitatory (PN→KC is cholinergic) |
 | Receptor sheet, PNs, KCs, MBONs, `KC → MBON`, dopamine, the task | **Invented** | unchanged from v0.1.0 |
 
