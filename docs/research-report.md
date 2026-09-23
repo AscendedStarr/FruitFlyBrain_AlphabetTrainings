@@ -615,10 +615,10 @@ inherited state:
 | --- | --- |
 | `python -m venv .venv-flybrain` | Python 3.10.11, `include-system-site-packages = false` |
 | `pip install -r requirements.txt` | resolved cleanly, torch 2.14.0 + pypdf 6.19.0 |
-| `pytest -q` | **14 passed** |
+| `pytest -q` | **14 passed** at v0.1.0; **33** as of v0.2.0 (19 connectome tests added) |
 | `make_checkpoint.py --quiet` | **100.0%**, first within 2 pt at **epoch 59**, 116.7 s for the whole command (102.5 s of it the train loop) |
 | `digit_proof.py --repeats 30` | **0/300** digits, **300/300** in vocabulary, **810/810** alphabet control, margins 0.359 / 0.159 |
-| `serve.py` | `GET /` → 200, 15,069 bytes; `GET /api/state` → 200 with the canonical config |
+| `serve.py` | `GET /` → 200, 15,069 bytes at v0.1.0 / **15,071** as of v0.2.0; `GET /api/state` → 200 with the canonical config |
 | `read_document.py` on the 132-page PDF | 100.0% on letters, 0/1,050-shape behaviour on digits |
 
 The run also produced the third file hash of §4 — `56891cdf…` in the clean copy
@@ -627,9 +627,9 @@ distinction was not just argued; it showed up unprompted in the verification.
 
 Two things to expect before they surprise you:
 
-1. Step 1 overwrites `runs/flybrain.pt`, and your checkpoint hash **will not match
-   the one printed above** even though the weights will. That is `torch.save`
-   timestamping its archive, not a different model — see §4.
+1. `make_checkpoint.py` overwrites `runs/flybrain.pt`, and your checkpoint hash
+   **will not match the one printed above** even though the weights will. That is
+   `torch.save` timestamping its archive, not a different model — see §4.
 2. `read_document.py` does **not** write a transcript by default. A full
    204,000-character transcript of a book is a copy of the book. `--save-text`
    will write one for your own reading; don't commit it.

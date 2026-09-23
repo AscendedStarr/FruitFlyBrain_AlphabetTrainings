@@ -499,36 +499,45 @@ extra 1,900 epochs were never doing any work. Rebuilding from scratch takes a
 
 ## Verify it yourself
 
-Every number above is regenerable. Nothing is a stored constant.
-The sequence below was run end to end in a clean copy of this repository — fresh
-virtualenv, fresh `pip install`, no inherited state — and it reproduced: **14/14
-tests pass**, training gives **100.0%** with first-within-2-points at **epoch 59**
-(116.7 s for the whole command, 102.5 s of it the train loop), the digit control
-gives **0/300** with **300/300** answers inside the vocabulary, the server answers
-`GET /` with 200 at 15,069 bytes, and `read_document.py` reads the book at 100.0%
-on letters.
+Every number above is regenerable. Nothing is a stored constant. The sequence
+below is the one that checks them. It was run end to end in a clean copy of this
+repository — fresh virtualenv, fresh `pip install`, no inherited state — and it
+reproduced: the tests pass, training gives **100.0%** with first-within-2-points
+at **epoch 59** (116.7 s for the whole command, 102.5 s of it the train loop),
+the digit control gives **0/300** with **300/300** answers inside the vocabulary,
+the server answers `GET /` with 200, and `read_document.py` reads the book at
+100.0% on letters.
+
+Two of those figures move whenever the code does, so they are stated as of
+v0.2.0 and both are printed by the commands below: the suite is **33 tests**
+(14 on the v0.1.0 model, 19 on the connectome) and `GET /` is **15,071 bytes**.
 
 ```powershell
 python -m venv .venv-flybrain
 .\.venv-flybrain\Scripts\python.exe -m pip install -r requirements.txt
 $env:OMP_NUM_THREADS=1
 
-# 1. train from scratch (~2 minutes). prints holdout accuracy and the
+# 1. the tests - 33 of them, ~14 s. The connectome tests skip rather than fail
+#    if data/hemibrain_mb.npz is absent.
+.\.venv-flybrain\Scripts\python.exe -m pytest -q
+
+# 2. train from scratch (~2 minutes). prints holdout accuracy and the
 #    first epoch within 2 points of it.
 .\.venv-flybrain\Scripts\python.exe make_checkpoint.py --quiet
 
-# 2. the negative control. 30 sweeps over all ten digits, and it hashes its own
+# 3. the negative control. 30 sweeps over all ten digits, and it hashes its own
 #    weights before and after to prove it taught itself nothing.
 .\.venv-flybrain\Scripts\python.exe digit_proof.py --repeats 30 --json runs/digit_proof.json
 
-# 3. the browser demo
+# 4. the browser demo
 .\.venv-flybrain\Scripts\python.exe serve.py        # http://127.0.0.1:8000/
 
-# 4. or read a document headlessly
+# 5. or read a document headlessly
 .\.venv-flybrain\Scripts\python.exe read_document.py <your-book.pdf> --json runs/book_read.json
 ```
 
-One thing to expect before it surprises you: step 1 overwrites `runs/flybrain.pt`,
+One thing to expect before it surprises you: the training step overwrites
+`runs/flybrain.pt`,
 and the checkpoint hash you get back **will not match the one printed above**,
 even though the weights will. That is `torch.save` timestamping its zip archive,
 not a difference in the model. Pass `--out runs/myrun.pt` if you want to keep the

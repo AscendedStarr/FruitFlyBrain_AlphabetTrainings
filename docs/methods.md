@@ -205,13 +205,15 @@ absolute difference, converging at epoch 59 with a 102.5 s train loop.
 
 The block above was also run in an empty copy of the repository — no virtualenv,
 no caches, no inherited state — as an end-to-end check of the clone-and-run
-claim. It passed: `pytest -q` reported 14 passed, `make_checkpoint.py --quiet`
+claim. It passed: `pytest -q` reported 14 passed at v0.1.0 and 33 as of v0.2.0
+(the 19 connectome tests were added), `make_checkpoint.py --quiet`
 reported 100.0% with first-within-2-point at epoch 59 in 116.7 s wall clock
 (102.5 s of it the train loop), `digit_proof.py --repeats 30` reported 0/300
 digits with 300/300 in vocabulary and 810/810 on the alphabet control,
-`serve.py` answered `GET /` with 200 and 15,069 bytes and `GET /api/state` with
-the canonical config, and `read_document.py` read the 132-page PDF at 100.0% on
-letters. The install resolved `torch` 2.14.0 and `pypdf` 6.19.0, the latter being
+`serve.py` answered `GET /` with 200 and 15,069 bytes at v0.1.0 and 15,071 as of
+v0.2.0 (the demo phrase in `web/index.html` became two characters longer) and
+`GET /api/state` with the canonical config, and `read_document.py` read the
+132-page PDF at 100.0% on letters. The install resolved `torch` 2.14.0 and `pypdf` 6.19.0, the latter being
 the only dependency used by a single script.
 
 Three separate 400-epoch runs — including that clean copy — produced three
