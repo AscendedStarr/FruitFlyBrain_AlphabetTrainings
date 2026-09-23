@@ -22,6 +22,9 @@ this on faith.
 
 ---
 
+<img width="1917" height="640" alt="Screenshot 2026-09-23 185424" src="https://github.com/user-attachments/assets/66560b3e-d994-4981-8f46-2f8b6dd4f433" />
+
+
 ## The part that actually works
 
 On the alphabet it was trained on, the fly is essentially perfect at four looks
@@ -126,6 +129,9 @@ crashes. That is the point.
 ---
 
 ## Made it read the Unabomber Manifesto
+
+<img width="1126" height="794" alt="Screenshot 2026-09-18 221958" src="https://github.com/user-attachments/assets/1affbcf6-bc4a-4c8f-8831-4c1140bd35bc" />
+
 
 One PDF, 132 pages, 669,627 bytes. The fly reads it one character at a time,
 four looks each, and answers with its own 27 letters. This is the full text, not
