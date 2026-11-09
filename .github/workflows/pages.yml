@@ -1,0 +1,87 @@
+name: pages
+
+# Publishes _site/ to GitHub Pages: the simulation at /.
+#
+# No torch here. `scripts/build_site.py` is stdlib-only and copies files, so the
+# recording in web/replay.json is what CI ships. That file is tracked on purpose
+# (see the note in .gitignore and in README.md): regenerating it needs the venv
+# and the checkpoint, which is a 2 GB detour CI should not take. A change to the
+# checkpoint therefore has to be accompanied by a fresh recording, and
+# tests/test_replay.py fails if the recording no longer matches the published
+# figures.
+#
+# Everything is one job on purpose. Splitting build and deploy means passing a
+# step output through a job output and gating the second job on it, and that
+# arrangement cost two failed runs to no benefit: the deploy job never started.
+# One job with guarded steps does the same work and the guards read a step
+# output directly.
+#
+# The Pages site itself has to exist before this can deploy, and it cannot be
+# created from here: POST /repos/{owner}/{repo}/pages needs a token with
+# administration rights, which GITHUB_TOKEN does not have, so `enablement: true`
+# fails with 403 "Resource not accessible by integration". The site has been
+# created for this repository (build_type: workflow). If that ever gets undone,
+# this workflow prints a notice naming the setting instead of failing.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "web/**"
+      - "scripts/build_site.py"
+      - "scripts/make_replay.py"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # Always assembled, so a broken build fails the run before anything is
+      # published, and so the assembly is proven on every push that touches web/.
+      - name: assemble _site
+        run: python scripts/build_site.py
+
+      - name: is Pages switched on for this repository?
+        id: status
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh api "repos/${GITHUB_REPOSITORY}/pages" > /dev/null 2>&1; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+            echo "Pages is on."
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice title=Pages is not switched on::Set Settings -> Pages -> Build and deployment -> Source: GitHub Actions, then re-run this workflow."
+          fi
+
+      - uses: actions/configure-pages@v5
+        if: steps.status.outputs.enabled == 'true'
+
+      - uses: actions/upload-pages-artifact@v3
+        if: steps.status.outputs.enabled == 'true'
+        with:
+          path: _site
+
+      - name: deploy
+        id: deployment
+        if: steps.status.outputs.enabled == 'true'
+        uses: actions/deploy-pages@v4

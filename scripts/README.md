@@ -33,9 +33,9 @@ Everything after this section is a one-off measurement.
   as a static page on GitHub Pages. Inference only (`learn=False`), which is why
   the recording is reusable. Asserts the captured figures against the published
   ones and refuses to write a replay that disagrees with them.
-- `build_site.py` — assemble `_site/` for Pages: `web/` at the root, the deck at
-  `/deck/`, and the two lines that point `index.html` at `replay.js`. Stdlib
-  only, because CI has no torch.
+- `build_site.py` — assemble `_site/` for Pages: `web/` at the root, plus the
+  two lines that point `index.html` at `replay.js`. Stdlib only, because CI has
+  no torch.
 - `read_document.py` — read a real document with the trained fly and record
   exactly what it said, with the same hash guard the page uses.
 - `digit_proof.py` — the digit negative control: show the fly all ten digits and

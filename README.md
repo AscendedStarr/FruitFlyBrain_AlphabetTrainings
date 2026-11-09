@@ -26,6 +26,53 @@ this on faith.
 
 https://youtu.be/ISDJARjHhgs
 
+## The simulation, in a browser
+
+https://ascendedstarr.github.io/FruitFlyBrain_AlphabetTrainings/
+
+Pages serves files, not PyTorch, so what is published there is a **recording of
+the real network**, not a re-implementation of it. That distinction is the whole
+point and the page says so in a bar across the top:
+
+- `scripts/make_replay.py` drives the actual `Session` from `scripts/serve.py`
+  against the tracked `runs/flybrain.pt` and writes every response to
+  `web/replay.json` — the state payload, the weight matrix, a presentation of
+  all 27 letters and all 10 digits, four phrases, and the digit proof.
+- `web/replay.js` intercepts the page's `fetch('/api/...')` calls and answers
+  them from that file. **No arithmetic happens in the browser.** Nothing is a
+  hardcoded constant dressed up as output, which was the failure mode in an
+  earlier version of this UI that shipped a fake `0.37` margin.
+- Because every route was recorded with `learn=False`, the responses are pure
+  inference and are therefore reusable — pressing `A` twice returns the same
+  recorded pass instead of a drifting one. Plasticity, training and reset are
+  refused with an explanation, because all three write to the weights and a
+  recording cannot. `python scripts/serve.py` is still the live version.
+- Anything outside the recording returns a visible `error: …` in the log rather
+  than a plausible-looking default.
+
+**Two denominators, on purpose.** The page's digit panel reads **0/10** with a
+**27/27** alphabet control, because it runs one presentation per symbol so it can
+finish in a second. The numbers in this README — **0/300** and **810/810** — come
+from `scripts/digit_proof.py --repeats 30`, the offline sweep. Same code path,
+same checkpoint, 30× the samples. They are different tables and neither is
+rounded into the other; `web/replay.json` records both, with the reason.
+
+`web/replay.json` is tracked, and that is deliberate: regenerating it needs
+torch and the checkpoint, which CI has neither of, so Pages ships the committed
+recording. `tests/test_replay.py` fails if it stops matching the published
+figures, which is what stops a stale recording from being published as current.
+The site itself is assembled by `scripts/build_site.py` (stdlib only) and
+deployed by `.github/workflows/pages.yml`.
+
+If that URL returns 404, Pages has not been switched on for the repository yet:
+*Settings → Pages → Build and deployment → Source: GitHub Actions*. That switch
+cannot be flipped from a workflow, because creating the Pages site needs a token
+with administration rights and `GITHUB_TOKEN` does not have them — so until it is
+flipped the `pages` workflow prints a notice and skips the deploy rather than
+failing on every push. The same files can be built and opened locally:
+`python scripts/build_site.py` writes `_site/`, and `_site/index.html` is the
+simulation.
+
 ## The part that actually works
 
 On the alphabet it was trained on, the fly is essentially perfect at four looks
@@ -46,7 +93,7 @@ per character:
 **On that first 100.0%:** the trainer's own evaluation is only 81 trials (27
 classes × 3 repeats), and every trial re-encodes the glyph from a Poisson
 generator, so re-running it against the *same* checkpoint can land on 80/81 and
-print 98.8% instead. `digit_proof.py` does exactly that: its header reads
+print 98.8% instead. `scripts/digit_proof.py` does exactly that: its header reads
 `98.8% on holdout` while its alphabet sweep in the same process is a clean
 810/810. Nothing differs between those two numbers except the sampling of one
 trial. If you want the figure that isn't small-n — **168,985 letters read out of
@@ -212,7 +259,7 @@ every answer share that hash, so the run can be checked without shipping a copy
 of the book.
 
 **On copyright:** this repository does not contain the text of the manifesto.
-`read_document.py` does not write a transcript by default, and the small
+`scripts/read_document.py` does not write a transcript by default, and the small
 `sample_transcript` in the JSON (400 characters, `--sample 0` to omit) is the
 fly's own output, included so a reader can see its errors rather than take the
 percentages on faith. A full 204,000-character transcript of a book is a copy of
@@ -286,17 +333,19 @@ This was checked three independent ways before being believed:
 That is correct *Drosophila* anatomy, not a tracing gap. So membership is
 decided by **connectivity, not nomenclature**: keep a PN iff at least one traced
 synapse reaches a KC, and keep a KC iff at least one PN reaches it. Unmatched
-edges dropped from 271 to 2. The result is 157 PNs and 1,802 KCs, with the PN
-layer made up of 118 uPN, 26 mPN, 11 biPN and 2 neurons absent from the curated
-table.
+edges dropped from 271 to 2 — that second 271 counts *edges*, not neurons, and
+the shared numeral is a coincidence. The result is 157 PNs and 1,802 KCs, with
+the PN layer made up of 118 uPN, 26 mPN, 11 biPN and 2 neurons absent from the
+curated table.
 
 This is the kind of thing that would have been invisible in a result. The loose
-rule runs fine — it just runs on a connectome where a third of the "projection
-neurons" are dead weight, and reports the result as a connectome result.
+rule runs fine — it just runs on a connectome where **271 of 428 "projection
+neurons" (63%) are dead weight**, and reports the result as a connectome result.
+Only the remaining 157 (37%) ever reach a Kenyon cell.
 
 ### Does the real wiring help?
 
-`connectome_compare.py` trains three arms on the same task, same seed, same
+`scripts/connectome_compare.py` trains three arms on the same task, same seed, same
 hyperparameters, with **the `PN → KC` matrix as the only variable**:
 
 | Arm | `PN → KC` matrix |
@@ -396,7 +445,7 @@ not a claim about *Drosophila*.
 | --- | --- |
 | The measured subgraph | `data/hemibrain_mb.npz`, 174 KB, tracked |
 | The extraction | `tools/build_connectome.py`, re-downloads ~46 MB |
-| The experiment | `connectome_compare.py` |
+| The experiment | `scripts/connectome_compare.py` |
 | The raw numbers | `runs/connectome_compare.json`, `runs/compare_seeds1113.json` |
 | The console output | `runs/compare_seed7.log`, `runs/compare_seeds1113.log` |
 | Per-arm checkpoints | **not tracked** — 9 × 229 KB, regenerable from the two files above |
@@ -457,7 +506,7 @@ points of that: **epoch 59**. Roughly 85% of the training budget does no
 measurable work. `epochs=400` is chosen to be safely past convergence, not
 because 400 was needed.
 
-`make_checkpoint.OLD-60pct.py` is the superseded recipe, kept in the repo
+`scripts/make_checkpoint.OLD-60pct.py` is the superseded recipe, kept in the repo
 because it reproduces the 60.5% plateau on demand.
 
 ### 2. The four identical looks
@@ -478,7 +527,7 @@ code. Passing `gen=brain.gen` makes each look an independent draw.
 
 ### The bit where I destroyed a long run
 
-Two `serve.py` processes ended up bound to the same port: one on the project
+Two `scripts/serve.py` processes ended up bound to the same port: one on the project
 virtualenv, one on the system Python that happened to be on `PATH`. The rogue
 one owned the socket. Because requests alternate between the two, `/api/state`
 reported `epoch 2021` while a measurement script reported `epoch 61` — two
@@ -512,7 +561,7 @@ repository — fresh virtualenv, fresh `pip install`, no inherited state — and
 reproduced: the tests pass, training gives **100.0%** with first-within-2-points
 at **epoch 59** (116.7 s for the whole command, 102.5 s of it the train loop),
 the digit control gives **0/300** with **300/300** answers inside the vocabulary,
-the server answers `GET /` with 200, and `read_document.py` reads the book at
+the server answers `GET /` with 200, and `scripts/read_document.py` reads the book at
 100.0% on letters.
 
 Two of those figures move whenever the code does, so they are stated as of
@@ -530,17 +579,17 @@ $env:OMP_NUM_THREADS=1
 
 # 2. train from scratch (~2 minutes). prints holdout accuracy and the
 #    first epoch within 2 points of it.
-.\.venv-flybrain\Scripts\python.exe make_checkpoint.py --quiet
+.\.venv-flybrain\Scripts\python.exe scripts\make_checkpoint.py --quiet
 
 # 3. the negative control. 30 sweeps over all ten digits, and it hashes its own
 #    weights before and after to prove it taught itself nothing.
-.\.venv-flybrain\Scripts\python.exe digit_proof.py --repeats 30 --json runs/digit_proof.json
+.\.venv-flybrain\Scripts\python.exe scripts\digit_proof.py --repeats 30 --json runs/digit_proof.json
 
 # 4. the browser demo
-.\.venv-flybrain\Scripts\python.exe serve.py        # http://127.0.0.1:8000/
+.\.venv-flybrain\Scripts\python.exe scripts\serve.py        # http://127.0.0.1:8000/
 
 # 5. or read a document headlessly
-.\.venv-flybrain\Scripts\python.exe read_document.py <your-book.pdf> --json runs/book_read.json
+.\.venv-flybrain\Scripts\python.exe scripts\read_document.py <your-book.pdf> --json runs/book_read.json
 ```
 
 One thing to expect before it surprises you: the training step overwrites
@@ -548,14 +597,14 @@ One thing to expect before it surprises you: the training step overwrites
 and the checkpoint hash you get back **will not match the one printed above**,
 even though the weights will. That is `torch.save` timestamping its zip archive,
 not a difference in the model. Pass `--out runs/myrun.pt` if you want to keep the
-shipped checkpoint alongside your own, and `read_document.py --ckpt <path>` to
+shipped checkpoint alongside your own, and `scripts/read_document.py --ckpt <path>` to
 read with it.
 
 ### Checking the claims rather than believing them
 
 ```powershell
 # the same weights every time: two independent 400-epoch runs
-.\.venv-flybrain\Scripts\python.exe make_checkpoint.py --quiet --out runs/again.pt
+.\.venv-flybrain\Scripts\python.exe scripts\make_checkpoint.py --quiet --out runs/again.pt
 # -> holdout accuracy 100.0%, first within 2pt: epoch 59, train loop ~102 s
 
 # a weight digest of both checkpoints comes out identical, mbon.w max diff 0.0;
@@ -564,12 +613,12 @@ read with it.
 
 | Claim | How to check it | Measured |
 | --- | --- | --- |
-| Train loop from scratch | time `make_checkpoint.py` | 102.5 s, 400 epochs, one thread |
+| Train loop from scratch | time `scripts/make_checkpoint.py` | 102.5 s, 400 epochs, one thread |
 | Converges long before 400 | the `first within 2pt` line it prints | epoch 59 |
 | Reproducible weights | retrain, compare weight digests | `626bece3…`, identical |
-| Digits cannot be named | `digit_proof.py --repeats 30` | 0/300, 300/300 in vocabulary |
+| Digits cannot be named | `scripts/digit_proof.py --repeats 30` | 0/300, 300/300 in vocabulary |
 | Reading changes no weights | before/after hashes in both scripts | unchanged, both |
-| A book can be read | `read_document.py` on a 132-page PDF | 99.8% answerable |
+| A book can be read | `scripts/read_document.py` on a 132-page PDF | 99.8% answerable |
 
 Then open the page. The circuit panel shows the receptor sheet, the PN and KC
 layers, the 27 MBON membrane traces, and — directly below the MBON readout —
@@ -603,13 +652,13 @@ Run the tests with `pytest`.
 | `flybrain/connectome.py` | The only module that knows about the connectome. Loads the measured subgraph and turns it into a `PN→KC` weight matrix. |
 | `tools/build_connectome.py` | Downloads the raw hemibrain export and writes `data/hemibrain_mb.npz`. Documents the exact source URL and the membership filter. |
 | `data/hemibrain_mb.npz` | The tracked artifact: 157 PN → 1802 KC, 68 MBON, 322 DAN, with body ids and cell types. 174 KB. |
-| `connectome_compare.py` | The three-arm comparison. Trains the same task on measured wiring, degree-matched shuffled wiring, and random wiring. |
-| `serve.py` | Standard-library HTTP server and the session/API layer. No frameworks, no build step. |
+| `scripts/connectome_compare.py` | The three-arm comparison. Trains the same task on measured wiring, degree-matched shuffled wiring, and random wiring. |
+| `scripts/serve.py` | Standard-library HTTP server and the session/API layer. No frameworks, no build step. |
 | `web/` | The demo. Vanilla JS canvas, edited and reloaded, nothing to compile. |
-| `make_checkpoint.py` | The recipe that converges. Single source of truth for the config. |
-| `make_checkpoint.OLD-60pct.py` | The superseded recipe, kept because it reproduces the 60.5% plateau. |
-| `digit_proof.py` | The negative control. |
-| `read_document.py` | Headless document reader, with the same hash guard. |
+| `scripts/make_checkpoint.py` | The recipe that converges. Single source of truth for the config. |
+| `scripts/make_checkpoint.OLD-60pct.py` | The superseded recipe, kept because it reproduces the 60.5% plateau. |
+| `scripts/digit_proof.py` | The negative control. |
+| `scripts/read_document.py` | Headless document reader, with the same hash guard. |
 | `scripts/` | The hunt and diagnostic scripts — the measurements the claims rest on. Nothing imports them; each one runs standalone. See `scripts/README.md`. |
 | `flybrain/proof.py` | Weight/checkpoint hashing used by both of the above. |
 | `docs/methods.md` | Full methods, every modelling choice flagged as a choice. |
@@ -630,10 +679,12 @@ them are written to answer one question and then stop. They live in `scripts/`
 so the repository root stays readable — run one as
 `.\\.venv-flybrain\\Scripts\\python.exe scripts\\looks.py`. Each of them puts the
 repository root on its own `sys.path`, so the working directory you run from
-does not matter. Seven of these load `runs/flybrain.pt` and never train;
-`scripts/keep_training.py` is the long run that wrote it, so running that one
-retrains and **overwrites the checkpoint**. `fly_brain.py` is a documented entry
-point, so it stays in the root.
+does not matter. Seven of these load `runs/flybrain.pt` and never train, but
+five can overwrite it: `scripts/keep_training.py` is the long run that wrote it,
+yet `scripts/fly_brain.py train` and `fly_brain.py demo`,
+`scripts/make_checkpoint.py`, `scripts/make_checkpoint.OLD-60pct.py` and a
+browser-triggered save in `scripts/serve.py` all default to that same path. Pass
+`--out` elsewhere, or copy the checkpoint first. See `scripts/README.md`.
 
 | Script | The question it was written to answer |
 | --- | --- |
@@ -645,7 +696,7 @@ point, so it stays in the root.
 | `scripts/why_mn.py` | Why do `M` and `N` fail while `O` and `Q` are nearly right? Lit pixels, KC sparsity, and a 35-pixel budget. |
 | `scripts/why_wrong.py` | Phrase arithmetic: per-letter accuracy raised to 16 letters, and what that costs. |
 | `scripts/keep_training.py` | The sweep over `trials_per_class`, `decision_repeats` and `n_kc` that ran while the recipe was stuck. |
-| `fly_brain.py` | The command-line driver: `demo`, `train`, `say`, `diag`. |
+| `scripts/fly_brain.py` | The command-line driver: `demo`, `train`, `say`, `diag`. |
 
 ---
 
