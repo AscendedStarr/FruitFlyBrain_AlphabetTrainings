@@ -1,9 +1,9 @@
 """Command-line driver.
 
-    python fly_brain.py demo
-    python fly_brain.py train --epochs 60
-    python fly_brain.py say "philippe delambre"
-    python fly_brain.py diag
+    python scripts\\fly_brain.py demo
+    python scripts\\fly_brain.py train --epochs 60
+    python scripts\\fly_brain.py say "philippe delambre"
+    python scripts\\fly_brain.py diag
 """
 
 from __future__ import annotations
@@ -13,11 +13,17 @@ import os
 import sys
 import time
 
+# The repository root, one level above this script, so `import flybrain` and the
+# checkpoint under runs/ resolve the same way from scripts/ as from the root.
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
+
 from flybrain import CLASSES, Config, FlyBrain, render
 from flybrain.encoding import FONT_5X7
 
 PHRASE = "PHILIPPE DELAMBRE"
-DEFAULT_CKPT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "runs", "flybrain.pt")
+DEFAULT_CKPT = os.path.join(ROOT, "runs", "flybrain.pt")
 
 
 def _banner(title: str) -> None:
@@ -192,8 +198,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     v = sub.add_parser("visualize", help="draw the fly, the circuit, and one letter")
     v.add_argument("--ckpt", default=DEFAULT_CKPT)
-    v.add_argument("--outdir", default=os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), "runs"))
+    v.add_argument("--outdir", default=os.path.join(ROOT, "runs"))
     v.add_argument("--letter", default="JEF", help="characters to trace through")
     v.add_argument("--epochs", type=int, default=40, help="used if no checkpoint")
     v.add_argument("--seed", type=int, default=7)

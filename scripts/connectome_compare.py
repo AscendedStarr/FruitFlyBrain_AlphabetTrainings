@@ -1,8 +1,8 @@
 """Train the same task on a real connectome and on controls, and compare.
 
-    .\\.venv-flybrain\\Scripts\\python.exe connectome_compare.py            # all three arms
-    .\\.venv-flybrain\\Scripts\\python.exe connectome_compare.py --seeds 7,11,13
-    .\\.venv-flybrain\\Scripts\\python.exe connectome_compare.py --quick      # 8-epoch smoke test
+    .\\.venv-flybrain\\Scripts\\python.exe scripts\\connectome_compare.py            # all three arms
+    .\\.venv-flybrain\\Scripts\\python.exe scripts\\connectome_compare.py --seeds 7,11,13
+    .\\.venv-flybrain\\Scripts\\python.exe scripts\\connectome_compare.py --quick      # 8-epoch smoke test
 
 What is being compared
 ----------------------
@@ -50,12 +50,17 @@ import time
 import numpy as np
 import torch
 
+# The repository root, one level above this script, so `import flybrain` and the
+# checkpoints under runs/ resolve the same way from scripts/ as from the root.
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
+
 from flybrain import Config
 from flybrain.connectome import load
 from flybrain.trainer import FlyBrain
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-RUNS = os.path.join(HERE, "runs")
+RUNS = os.path.join(ROOT, "runs")
 
 #: Read the look count the UI uses without importing serve.py's torch-heavy body.
 #: Kept in sync with serve.LOOKS and make_checkpoint.LOOKS.
@@ -128,7 +133,7 @@ def run_arm(wiring: str, epochs: int, seed: int, overrides: dict,
     out = os.path.join(RUNS, "wiring_%s_seed%d.pt" % (wiring, seed))
     brain.save(out, note="%s wiring, seed %d, %.1f%% (%d epochs)"
                % (wiring, seed, 100 * acc, epochs))
-    result["checkpoint"] = os.path.relpath(out, HERE)
+    result["checkpoint"] = os.path.relpath(out, ROOT)
     return result
 
 
@@ -230,7 +235,7 @@ def main() -> int:
             "results": results,
         }, fh, indent=2)
     print("wrote %s" % args.json)
-    print("checkpoints in %s" % os.path.relpath(RUNS, HERE))
+    print("checkpoints in %s" % os.path.relpath(RUNS, ROOT))
     return 0
 
 

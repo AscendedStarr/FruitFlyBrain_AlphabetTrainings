@@ -2,8 +2,8 @@
 
 Run it:
 
-    .\\.venv-flybrain\\Scripts\\python.exe serve.py
-    .\\.venv-flybrain\\Scripts\\python.exe serve.py --port 8000 --no-browser
+    .\\.venv-flybrain\\Scripts\\python.exe scripts\\serve.py
+    .\\.venv-flybrain\\Scripts\\python.exe scripts\\serve.py --port 8000 --no-browser
 
 Then open http://127.0.0.1:8000
 
@@ -29,6 +29,14 @@ from urllib.parse import urlparse
 # thread-pool thrash torch causes on small tensors.
 os.environ.setdefault("OMP_NUM_THREADS", "1")
 
+# The repository root, one level above this script. Everything this file reads or
+# writes - the web assets, the checkpoint, the run logs - hangs off the root
+# rather than off the script's own directory, so the layout is still right now
+# that the script lives in scripts/.
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
+
 import torch  # noqa: E402
 
 from flybrain import (  # noqa: E402
@@ -44,8 +52,7 @@ from flybrain import (  # noqa: E402
 )
 from flybrain.docread import from_upload  # noqa: E402
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-WEB_DIR = os.path.join(HERE, "web")
+WEB_DIR = os.path.join(ROOT, "web")
 MIME = {".html": "text/html", ".js": "text/javascript",
         ".css": "text/css", ".png": "image/png", ".ico": "image/x-icon"}
 
@@ -74,7 +81,7 @@ class Session:
 
     def __init__(self, cfg: Config, ckpt: str | None = None) -> None:
         self.lock = threading.Lock()
-        self.ckpt = ckpt or os.path.join(HERE, "runs", "flybrain.pt")
+        self.ckpt = ckpt or os.path.join(ROOT, "runs", "flybrain.pt")
         self.log: list[str] = []
         self.brain = self._restore(cfg)
         # The checkpoint's own config wins: its weights only mean anything
@@ -745,7 +752,7 @@ def main() -> None:
     # on the project venv and one on the system Python, and the only place that
     # was visible was here.
     print(f"  interpreter: {sys.executable}")
-    print(f"  checkpoint : {os.path.relpath(SESSION.ckpt, HERE)}"
+    print(f"  checkpoint : {os.path.relpath(SESSION.ckpt, ROOT)}"
           f"  (epoch {SESSION.brain.epoch})")
     print("  Ctrl+C to stop\n")
     if not args.no_browser:

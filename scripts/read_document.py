@@ -26,9 +26,9 @@ The stream keeps every character that came out of the file. Three cases:
 * **punctuation** - no glyph at all, so it is stepped over and excluded from
   the accuracy. It is counted separately and never quietly dropped.
 
-    .\\.venv-flybrain\\Scripts\\python.exe read_document.py <path>
-    .\\.venv-flybrain\\Scripts\\python.exe read_document.py <path> --limit 20000
-    .\\.venv-flybrain\\Scripts\\python.exe read_document.py <path> --json runs/book_read.json
+    .\\.venv-flybrain\\Scripts\\python.exe scripts\\read_document.py <path>
+    .\\.venv-flybrain\\Scripts\\python.exe scripts\\read_document.py <path> --limit 20000
+    .\\.venv-flybrain\\Scripts\\python.exe scripts\\read_document.py <path> --json runs/book_read.json
 """
 
 from __future__ import annotations
@@ -42,6 +42,12 @@ import time
 
 os.environ.setdefault("OMP_NUM_THREADS", "1")
 
+# The repository root, one level above this script, so `import flybrain` and the
+# checkpoint under runs/ resolve the same way from scripts/ as from the root.
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
+
 from flybrain import (  # noqa: E402
     CLASSES,
     Config,
@@ -52,8 +58,6 @@ from flybrain import (  # noqa: E402
 )
 from flybrain.docread import build  # noqa: E402
 from flybrain.proof import snapshot, verify  # noqa: E402
-
-HERE = os.path.dirname(os.path.abspath(__file__))
 
 
 def read_one(brain: FlyBrain, ch: str, looks: int) -> tuple[int, float]:
@@ -83,7 +87,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0],
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("path", help="document to read (.pdf, .epub, .txt, ...)")
-    ap.add_argument("--ckpt", default=os.path.join(HERE, "runs", "flybrain.pt"))
+    ap.add_argument("--ckpt", default=os.path.join(ROOT, "runs", "flybrain.pt"))
     ap.add_argument("--looks", type=int, default=4,
                     help="presentations averaged per answer (the UI uses 4)")
     ap.add_argument("--limit", type=int, default=0,

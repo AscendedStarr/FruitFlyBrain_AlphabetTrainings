@@ -82,7 +82,7 @@ a symbol outside its 27 cells.
 
 `wiring="connectome"` swaps the `PN → KC` matrix for the measured hemibrain v1.2
 anatomy (157 PNs, 1,802 KCs, 185,994 traced PN→KC synapses) and trains the same
-task with the same hyperparameters. `connectome_compare.py` runs it against two
+task with the same hyperparameters. `scripts/connectome_compare.py` runs it against two
 controls — a degree-matched shuffle that keeps every KC's exact partner *count*
 but randomises *which* PNs, and the v0.1.0 random-expansion path at the
 connectome's dimensions with the connectome's median fan-in.
@@ -101,7 +101,7 @@ actually learns — is still random, dense, and the largest gap in the model.
 
 ### Reading a real document
 
-One 132-page PDF (209,939 characters) read with `read_document.py` at epoch 400,
+One 132-page PDF (209,939 characters) read with `scripts/read_document.py` at epoch 400,
 4 looks, with the checkpoint hashed before and after. Letters were defined as the
 168,985 characters that have a glyph, not the 169,527 that `str.isalpha()`
 accepts — 542 PDF ligatures (`ﬁ`, `ﬀ`, `ﬃ`, `ﬂ`, `ﬄ`) have no glyph and are

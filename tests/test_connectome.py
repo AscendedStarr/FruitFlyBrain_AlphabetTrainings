@@ -2,7 +2,7 @@
 
 These run against the tracked ``data/hemibrain_mb.npz``. They are deliberately
 about *plumbing and controls*, not about accuracy: the accuracy experiment is
-``connectome_compare.py`` and takes ~40 minutes, which is not a unit test.
+``scripts/connectome_compare.py`` and takes ~40 minutes, which is not a unit test.
 
 The test that matters most here is
 ``test_shuffled_control_preserves_degree_and_weights``. It is the test that makes

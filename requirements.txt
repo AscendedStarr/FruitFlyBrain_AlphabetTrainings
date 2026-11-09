@@ -4,6 +4,6 @@ numpy>=1.26
 matplotlib>=3.8
 pytest>=8.0
 
-# Only needed by read_document.py for PDFs. It is imported lazily, so EPUB and
+# Only needed by scripts/read_document.py for PDFs. It is imported lazily, so EPUB and
 # plain-text reading, training, the demo and the tests all work without it.
 pypdf>=4.0

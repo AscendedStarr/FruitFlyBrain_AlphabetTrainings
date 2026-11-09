@@ -59,7 +59,7 @@ instead. If you extend this code, do not remove the `credit=`/`punish=` argument
 
 ## 3. The recipe that works
 
-`make_checkpoint.py::build_config()` is the single source of truth:
+`scripts/make_checkpoint.py::build_config()` is the single source of truth:
 
 ```python
 Config(
@@ -90,13 +90,13 @@ settling on it.
 **`epochs=400`, not 2000** — accuracy reaches ~99% within ~60 epochs and is flat
 afterwards. See the convergence note below.
 
-`make_checkpoint.OLD-60pct.py` is the superseded recipe, kept because it
+`scripts/make_checkpoint.OLD-60pct.py` is the superseded recipe, kept because it
 reproduces the 60.5% plateau on demand. If you are writing up a negative result,
 that file is the negative result.
 
 ## 4. Convergence
 
-`make_checkpoint.py` reports the first epoch that reached within 2 accuracy
+`scripts/make_checkpoint.py` reports the first epoch that reached within 2 accuracy
 points of the final score:
 
 ```
@@ -125,7 +125,7 @@ recipe, for comparison, reaches 60.5% and stops moving.
 
 ## 6. The negative control
 
-`digit_proof.py` presents all ten digits and records the answers. It is a
+`scripts/digit_proof.py` presents all ten digits and records the answers. It is a
 forward-only test: `read_out()` calls `MushroomBody.present()`, which computes
 the PN/KC/MBON response and stages an eligibility trace, and **never** calls
 `apply_dopamine()`. No `trial()`, no `learn=True`, no `brain.save()`.
@@ -136,14 +136,14 @@ empirical.
 The script additionally hashes every weight matrix and the checkpoint file
 before and after all 300 presentations and asserts both are unchanged.
 
-See `flybrain/proof.py`, reused by both `digit_proof.py` and
-`read_document.py`.
+See `flybrain/proof.py`, reused by both `scripts/digit_proof.py` and
+`scripts/read_document.py`.
 
 ## 7. Document reading
 
 `flybrain/docread.py` extracts text and collapses every whitespace run to a
 single space, so a character index is a character index and position is carried
-by a page map. `read_document.py` then presents each character:
+by a page map. `scripts/read_document.py` then presents each character:
 
 - **letters and space** — answerable; a right answer is possible.
 - **digits** — presentable (a glyph exists) but unanswerable (no output cell),
@@ -183,9 +183,9 @@ python -m venv .venv-flybrain
 .\.venv-flybrain\Scripts\python.exe -m pip install -r requirements.txt
 $env:OMP_NUM_THREADS=1
 
-.\.venv-flybrain\Scripts\python.exe make_checkpoint.py --quiet
-.\.venv-flybrain\Scripts\python.exe digit_proof.py --repeats 30 --json runs/digit_proof.json
-.\.venv-flybrain\Scripts\python.exe read_document.py <your-book.pdf> --json runs/book_read.json
+.\.venv-flybrain\Scripts\python.exe scripts\make_checkpoint.py --quiet
+.\.venv-flybrain\Scripts\python.exe scripts\digit_proof.py --repeats 30 --json runs/digit_proof.json
+.\.venv-flybrain\Scripts\python.exe scripts\read_document.py <your-book.pdf> --json runs/book_read.json
 .\.venv-flybrain\Scripts\python.exe -m pytest -q
 ```
 The connectome path needs two more commands, and they are independent of the
@@ -193,7 +193,7 @@ block above — no checkpoint has to exist first:
 
 ```powershell
 .\\.venv-flybrain\Scripts\python.exe tools/build_connectome.py   # ~46 MB public download -> data/hemibrain_mb.npz
-.\\.venv-flybrain\Scripts\python.exe connectome_compare.py --seeds 7,11,13 --epochs 400
+.\\.venv-flybrain\Scripts\python.exe scripts\connectome_compare.py --seeds 7,11,13 --epochs 400
 ```
 
 `data/hemibrain_mb.npz` is committed, so the download is only needed to rebuild
@@ -207,13 +207,13 @@ absolute difference, converging at epoch 59 with a 102.5 s train loop.
 The block above was also run in an empty copy of the repository — no virtualenv,
 no caches, no inherited state — as an end-to-end check of the clone-and-run
 claim. It passed: `pytest -q` reported 14 passed at v0.1.0 and 33 as of v0.2.0
-(the 19 connectome tests were added), `make_checkpoint.py --quiet`
+(the 19 connectome tests were added), `scripts/make_checkpoint.py --quiet`
 reported 100.0% with first-within-2-point at epoch 59 in 116.7 s wall clock
-(102.5 s of it the train loop), `digit_proof.py --repeats 30` reported 0/300
+(102.5 s of it the train loop), `scripts/digit_proof.py --repeats 30` reported 0/300
 digits with 300/300 in vocabulary and 810/810 on the alphabet control,
-`serve.py` answered `GET /` with 200 and 15,069 bytes at v0.1.0 and 15,071 as of
+`scripts/serve.py` answered `GET /` with 200 and 15,069 bytes at v0.1.0 and 15,071 as of
 v0.2.0 (the demo phrase in `web/index.html` became two characters longer) and
-`GET /api/state` with the canonical config, and `read_document.py` read the
+`GET /api/state` with the canonical config, and `scripts/read_document.py` read the
 132-page PDF at 100.0% on letters. The install resolved `torch` 2.14.0 and `pypdf` 6.19.0, the latter being
 the only dependency used by a single script.
 
@@ -322,7 +322,7 @@ synapse counts, not synaptic strengths.
 
 ### 9.4 The three arms
 
-`connectome_compare.py` holds the seed, the hyperparameters, the encoder and the
+`scripts/connectome_compare.py` holds the seed, the hyperparameters, the encoder and the
 learning rule fixed, and changes exactly one thing — the `PN → KC` matrix — across
 three arms. Dimensions are taken from the connectome, so all three arms run at
 157 PNs, 1,802 KCs, *k*=211 and 48,654 plastic synapses:

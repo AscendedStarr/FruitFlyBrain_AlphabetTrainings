@@ -11,12 +11,18 @@ the best of them scores 40.7%.
 from __future__ import annotations
 
 import os
+import sys
+
+# The repository root, one level above this script, so `import flybrain` and the
+# checkpoint under runs/ resolve the same way from scripts/ as from the root.
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
 
 from flybrain import Config
 from flybrain.trainer import FlyBrain
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-OUT = os.path.join(HERE, "runs", "flybrain.pt")
+OUT = os.path.join(ROOT, "runs", "flybrain.pt")
 EPOCHS = 400
 
 cfg = Config(lr=0.020, credit_mode="pattern", lr_schedule="const",

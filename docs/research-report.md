@@ -242,7 +242,7 @@ during development — is the same bug class. Use the glyph table.
 ### 3.5 The measured connectome, against two controls
 
 The synthetic `PN → KC` expansion was replaced with the measured hemibrain v1.2
-wiring and the same task was trained on it. `connectome_compare.py` holds
+wiring and the same task was trained on it. `scripts/connectome_compare.py` holds
 everything fixed except that one matrix, and runs three arms:
 
 | Arm | `PN → KC` | What it isolates |
@@ -379,7 +379,7 @@ Config(lr=0.020, credit_mode="pattern", reward_mode="pavlovian",
        lr_schedule="inv", lr_half_life=300, epochs=400, seed=7)
 ```
 
-`make_checkpoint.OLD-60pct.py` is kept in the repository because it reproduces the
+`scripts/make_checkpoint.OLD-60pct.py` is kept in the repository because it reproduces the
 plateau on demand.
 
 ### 6.2 The four identical looks
@@ -447,7 +447,7 @@ lateral-horn-projecting cells, which is correct anatomy. Membership is therefore
 decided by **connectivity, not nomenclature**. Result: **157 PNs, 1,802 KCs**,
 unmatched edges 271 → 2.
 
-**The comparison.** `connectome_compare.py` trains three arms on the same task,
+**The comparison.** `scripts/connectome_compare.py` trains three arms on the same task,
 same seed, same hyperparameters, with the `PN → KC` matrix as the only variable.
 Three seeds, 400 epochs, 81-glyph holdout:
 
@@ -502,7 +502,7 @@ MNIST, no EMNIST, and no scraped dataset.
 
 ### 7.4 One destroyed long run
 
-Two `serve.py` processes ended up bound to the same port — one on the project
+Two `scripts/serve.py` processes ended up bound to the same port — one on the project
 virtualenv, one on the system Python that happened to be on `PATH`. Requests
 alternated between them, so `/api/state` reported `epoch 2021` while a measurement
 script reported `epoch 61`: two different brains answering the same question. The
@@ -563,7 +563,7 @@ with it, which is not.
 | `data/hemibrain_mb.npz` | Derived hemibrain v1.2 subgraph: 157 PN → 1802 KC, 68 MBON, 322 DAN. 173.9 KB |
 | `flybrain/connectome.py` | Loader. The only module that knows a connectome exists |
 | `tools/build_connectome.py` | Extract the above from the public hemibrain bucket |
-| `connectome_compare.py` | The three-arm experiment |
+| `scripts/connectome_compare.py` | The three-arm experiment |
 | `runs/flybrain.CLOBBERED-epoch61.pt` | Evidence for §7.4 |
 | `runs/schedule.log`, `runs/sweep.log` | Output of the long sweeps |
 
@@ -574,10 +574,10 @@ python -m venv .venv-flybrain
 .\.venv-flybrain\Scripts\python.exe -m pip install -r requirements.txt
 $env:OMP_NUM_THREADS=1
 
-.\.venv-flybrain\Scripts\python.exe make_checkpoint.py --quiet
-.\.venv-flybrain\Scripts\python.exe digit_proof.py --repeats 30 --json runs/digit_proof.json
-.\.venv-flybrain\Scripts\python.exe serve.py                        # http://127.0.0.1:8000/
-.\.venv-flybrain\Scripts\python.exe read_document.py <your-book.pdf> --json runs/book_read.json
+.\.venv-flybrain\Scripts\python.exe scripts\make_checkpoint.py --quiet
+.\.venv-flybrain\Scripts\python.exe scripts\digit_proof.py --repeats 30 --json runs/digit_proof.json
+.\.venv-flybrain\Scripts\python.exe scripts\serve.py                        # http://127.0.0.1:8000/
+.\.venv-flybrain\Scripts\python.exe scripts\read_document.py <your-book.pdf> --json runs/book_read.json
 ```
 The connectome experiment needs two more steps. `build_connectome.py` needs no
 credentials — the hemibrain bucket is public (CC BY 4.0) — and downloads ~46 MB.
@@ -586,7 +586,7 @@ only required if you want to rebuild the extract yourself.
 
 ```powershell
 .\\.venv-flybrain\Scripts\python.exe tools/build_connectome.py    # ~46 MB download, -> data/hemibrain_mb.npz
-.\\.venv-flybrain\Scripts\python.exe connectome_compare.py --seeds 7,11,13 --epochs 400
+.\\.venv-flybrain\Scripts\python.exe scripts\connectome_compare.py --seeds 7,11,13 --epochs 400
 ```
 
 That is nine trainings at ~260–310 s each, so budget roughly 40 minutes on one
@@ -594,13 +594,13 @@ thread. `--quick --epochs 8` will smoke-test the plumbing in about 20 seconds
 without producing a number worth quoting.
 | Claim | How to check it | Measured |
 | --- | --- | --- |
-| Train loop from scratch | time `make_checkpoint.py` | 102.5 s, 400 epochs, one thread |
+| Train loop from scratch | time `scripts/make_checkpoint.py` | 102.5 s, 400 epochs, one thread |
 | Converges long before 400 | the `first within 2pt` line it prints | epoch 59 |
 | Reproducible weights | retrain, compare weight digests | `626bece3…`, identical |
-| Digits cannot be named | `digit_proof.py --repeats 30` | 0/300, 300/300 in vocabulary |
+| Digits cannot be named | `scripts/digit_proof.py --repeats 30` | 0/300, 300/300 in vocabulary |
 | Reading changes no weights | before/after hashes in both scripts | unchanged, both |
-| A book can be read | `read_document.py` on a 132-page PDF | 99.8% answerable |
-| The real connectome trains | `connectome_compare.py`, `connectome` arm | 100.0% holdout, 3 seeds |
+| A book can be read | `scripts/read_document.py` on a 132-page PDF | 99.8% answerable |
+| The real connectome trains | `scripts/connectome_compare.py`, `connectome` arm | 100.0% holdout, 3 seeds |
 | Partner identity is not the ingredient | the `connectome-shuffled` arm, paired per seed | +0 items, every seed |
 | Fan-in distribution is the open question | compare `random` at uniform 6 vs the connectome's spread | not yet isolated — §3.5 |
 
@@ -616,10 +616,10 @@ inherited state:
 | `python -m venv .venv-flybrain` | Python 3.10.11, `include-system-site-packages = false` |
 | `pip install -r requirements.txt` | resolved cleanly, torch 2.14.0 + pypdf 6.19.0 |
 | `pytest -q` | **14 passed** at v0.1.0; **33** as of v0.2.0 (19 connectome tests added) |
-| `make_checkpoint.py --quiet` | **100.0%**, first within 2 pt at **epoch 59**, 116.7 s for the whole command (102.5 s of it the train loop) |
-| `digit_proof.py --repeats 30` | **0/300** digits, **300/300** in vocabulary, **810/810** alphabet control, margins 0.359 / 0.159 |
-| `serve.py` | `GET /` → 200, 15,069 bytes at v0.1.0 / **15,071** as of v0.2.0; `GET /api/state` → 200 with the canonical config |
-| `read_document.py` on the 132-page PDF | 100.0% on letters, 0/1,050-shape behaviour on digits |
+| `scripts/make_checkpoint.py --quiet` | **100.0%**, first within 2 pt at **epoch 59**, 116.7 s for the whole command (102.5 s of it the train loop) |
+| `scripts/digit_proof.py --repeats 30` | **0/300** digits, **300/300** in vocabulary, **810/810** alphabet control, margins 0.359 / 0.159 |
+| `scripts/serve.py` | `GET /` → 200, 15,069 bytes at v0.1.0 / **15,071** as of v0.2.0; `GET /api/state` → 200 with the canonical config |
+| `scripts/read_document.py` on the 132-page PDF | 100.0% on letters, 0/1,050-shape behaviour on digits |
 
 The run also produced the third file hash of §4 — `56891cdf…` in the clean copy
 against `1e56a34a…` here — with the identical weight digest. The reproducibility
@@ -627,10 +627,10 @@ distinction was not just argued; it showed up unprompted in the verification.
 
 Two things to expect before they surprise you:
 
-1. `make_checkpoint.py` overwrites `runs/flybrain.pt`, and your checkpoint hash
+1. `scripts/make_checkpoint.py` overwrites `runs/flybrain.pt`, and your checkpoint hash
    **will not match the one printed above** even though the weights will. That is
    `torch.save` timestamping its archive, not a different model — see §4.
-2. `read_document.py` does **not** write a transcript by default. A full
+2. `scripts/read_document.py` does **not** write a transcript by default. A full
    204,000-character transcript of a book is a copy of the book. `--save-text`
    will write one for your own reading; don't commit it.
 

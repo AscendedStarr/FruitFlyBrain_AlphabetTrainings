@@ -21,9 +21,9 @@ Nothing in this script is simulated, approximated, or post-hoc:
 The script prints the confusion table and, optionally, dumps it as JSON next to
 the checkpoint so the numbers in the README can be regenerated.
 
-    .\\.venv-flybrain\\Scripts\\python.exe digit_proof.py
-    .\\.venv-flybrain\\Scripts\\python.exe digit_proof.py --json runs/digit_proof.json
-    .\\.venv-flybrain\\Scripts\\python.exe digit_proof.py --naive   # untrained control
+    .\\.venv-flybrain\\Scripts\\python.exe scripts\\digit_proof.py
+    .\\.venv-flybrain\\Scripts\\python.exe scripts\\digit_proof.py --json runs/digit_proof.json
+    .\\.venv-flybrain\\Scripts\\python.exe scripts\\digit_proof.py --naive   # untrained control
 """
 
 from __future__ import annotations
@@ -31,8 +31,15 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import sys
 
 os.environ.setdefault("OMP_NUM_THREADS", "1")
+
+# The repository root, one level above this script, so `import flybrain` and the
+# checkpoint under runs/ resolve the same way from scripts/ as from the root.
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
 
 from flybrain import (  # noqa: E402
     CLASSES,
@@ -42,8 +49,6 @@ from flybrain import (  # noqa: E402
     encode_from_config,
 )
 from flybrain.proof import snapshot, verify  # noqa: E402
-
-HERE = os.path.dirname(os.path.abspath(__file__))
 
 
 def read_out(brain: FlyBrain, char: str, looks: int) -> tuple[int, list[float]]:
@@ -90,7 +95,7 @@ def sweep(brain, looks):
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--ckpt", default=os.path.join(HERE, "runs", "flybrain.pt"))
+    ap.add_argument("--ckpt", default=os.path.join(ROOT, "runs", "flybrain.pt"))
     ap.add_argument("--looks", type=int, default=4,
                     help="presentations averaged per answer (the UI uses 4)")
     ap.add_argument("--repeats", type=int, default=20,

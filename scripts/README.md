@@ -2,8 +2,8 @@
 
 The working scripts behind the numbers in the root `README.md`,
 `docs/methods.md` and `docs/research-report.md`. They live here so the
-repository root stays readable. Nothing in `flybrain/`, `serve.py` or `web/`
-imports them, and none of them is needed to run the demo.
+repository root stays readable. Nothing in `flybrain/` or `web/` imports them,
+and none of them is needed to run the demo.
 
 Run one with the project virtual environment:
 
@@ -21,15 +21,52 @@ They are **not** part of the test suite: `pytest.ini` collects only `tests/`.
 The scripts here named `test_*.py` are one-off regressions kept next to the code
 they check, not pytest tests.
 
-## Only one of these writes the checkpoint
+## Entry points
 
-`keep_training.py` is the long run that produced `runs/flybrain.pt` — the file
-`serve.py` loads as the demo's brain. **Running it retrains and overwrites that
-checkpoint.** It also streams progress to `runs/sweep.log`.
+These are the ones the root `README.md` documents and that the demo depends on.
+Everything after this section is a one-off measurement.
 
-Two others write throwaway checkpoints instead of the canonical one:
-`converge.py` writes `runs/alphabet_<lr>.pt` and `test_resume.py` writes
-`runs/_resume_test.pt`. No other script here writes to `runs/` at all.
+- `fly_brain.py` — the command-line driver: `demo`, `train`, `say`, `diag`.
+- `serve.py` — the local interactive web UI: a stdlib HTTP server plus a handful
+  of JSON endpoints, serving `web/`.
+- `make_replay.py` — record a real session to `web/replay.json` so the UI can run
+  as a static page on GitHub Pages. Inference only (`learn=False`), which is why
+  the recording is reusable. Asserts the captured figures against the published
+  ones and refuses to write a replay that disagrees with them.
+- `build_site.py` — assemble `_site/` for Pages: `web/` at the root, the deck at
+  `/deck/`, and the two lines that point `index.html` at `replay.js`. Stdlib
+  only, because CI has no torch.
+- `read_document.py` — read a real document with the trained fly and record
+  exactly what it said, with the same hash guard the page uses.
+- `digit_proof.py` — the digit negative control: show the fly all ten digits and
+  record the answers, so the `0 / 300` in the README can be regenerated.
+- `connectome_compare.py` — train the same task on a real connectome and on
+  controls, and compare. Same glyphs, same initialisation, same dimensions.
+- `make_checkpoint.py` — train one good checkpoint for the web UI (and for
+  `digit_proof.py`) to serve.
+- `make_checkpoint.OLD-60pct.py` — the same, with the recipe that plateaus at
+  60.5%. Kept to show that the ceiling was the recipe.
+
+## Which of these write the checkpoint
+
+`runs/flybrain.pt` — the file `serve.py` loads as the demo's brain — can be
+overwritten by **five** scripts here, and in every case the default output path
+is the canonical checkpoint itself:
+
+- `keep_training.py` — the long run that produced it. Also streams progress to
+  `runs/sweep.log`.
+- `fly_brain.py train` and `fly_brain.py demo` — `--out` defaults to it, so a
+  plain `demo` replaces the trained brain. `fly_brain.py say --retrain` writes
+  it too. Pass `--out` elsewhere, or copy the checkpoint first.
+- `make_checkpoint.py` — `--out` defaults to it.
+- `make_checkpoint.OLD-60pct.py` — a fixed output path, so it always overwrites.
+- `serve.py` — saves back to its `--ckpt` (the canonical checkpoint by default)
+  when you train or save from the browser.
+
+Three write throwaway checkpoints instead of the canonical one: `converge.py`
+writes `runs/alphabet_<lr>.pt`, `connectome_compare.py` writes
+`runs/wiring_<arm>_seed<N>.pt`, and `test_resume.py` writes
+`runs/_resume_test.pt`.
 
 ## Reading the trained circuit
 

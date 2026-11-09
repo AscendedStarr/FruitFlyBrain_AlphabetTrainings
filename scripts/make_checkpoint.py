@@ -38,11 +38,16 @@ import argparse
 import os
 import sys
 
+# The repository root, one level above this script, so `import flybrain` and the
+# checkpoint under runs/ resolve the same way from scripts/ as from the root.
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
+
 from flybrain import Config
 from flybrain.trainer import FlyBrain
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-DEFAULT_OUT = os.path.join(HERE, "runs", "flybrain.pt")
+DEFAULT_OUT = os.path.join(ROOT, "runs", "flybrain.pt")
 
 # Read the look count the UI uses without importing serve.py's torch-heavy body
 # until after training. Keep this in sync with serve.LOOKS.
